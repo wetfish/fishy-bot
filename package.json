@@ -26,7 +26,8 @@
     "dependencies":
     {
         "irc": "*",
-        "github": "*"
+        "github": "*",
+        "prompt": "*"
     },
 
     "license": "GPL"

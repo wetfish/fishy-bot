@@ -1,7 +1,7 @@
 var irc = require("irc");
 
 // Get server configuration
-var config = require("./config/wetfish.js");
+var config = require("./config/server.js");
 
 // Connect to IRC
 var client = new irc.Client(config.server, config.name, config);

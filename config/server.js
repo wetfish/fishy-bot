@@ -1,5 +1,5 @@
 module.exports = {
-    server: 'irc.wetfish.net',
+    server: 'irc.remx25.com',
     port: 6697,
     secure: true,
     selfSigned: true,
