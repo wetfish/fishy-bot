@@ -1,0 +1,33 @@
+{
+    "name": "fishy-bot",
+    "version": "0.0.1",
+    "description": "A fishy bot for wetfish.net",
+    "author": "Rachel Fish <rachel@wetfish.net>",
+
+    "repository":
+    {
+        "type": "git",
+        "url": "https://github.com/wetfish/fishy"
+    },
+    
+    "bugs":
+    {
+        "url": "https://github.com/wetfish/fishy/issues"
+    },
+    
+    "keywords":
+    [
+        "wetfish",
+        "fishnet",
+        "irc",
+        "bot"
+    ],
+    
+    "dependencies":
+    {
+        "irc": "*",
+        "github": "*"
+    },
+
+    "license": "GPL"
+}
