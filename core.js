@@ -30,7 +30,7 @@ module.exports = (function()
                 // Make sure the loaded module has a load function
                 if(typeof core.loaded[module].load == "function")
                 {
-                    core.loaded[module].load(core.client);
+                    core.loaded[module].load(core, core.client);
                 }
                 else
                 {
@@ -45,18 +45,22 @@ module.exports = (function()
 
         unload: function(module)
         {
-            // Make sure the loaded module has a load function
-            if(typeof core.loaded[module].unload == "function")
+            // Make sure this module is actually loaded
+            if(typeof core.loaded[module] != "undefined")
             {
-                core.loaded[module].unload();
+                // Make sure the loaded module has a load function
+                if(typeof core.loaded[module].unload == "function")
+                {
+                    core.loaded[module].unload();
+                }
+                else
+                {
+                    console.log("Warning: Module '"+module+"' cannot be unloaded!");
+                }
+                
+                delete core.loaded[module];
+                delete require.cache[require.resolve("./modules/"+module+".js")];
             }
-            else
-            {
-                console.log("Warning: Module '"+module+"' cannot be unloaded!");
-            }
-            
-            delete core.loaded[module];
-            delete require.cache[require.resolve("./modules/"+module+".js")];
         },
 
         reload: function(module)
