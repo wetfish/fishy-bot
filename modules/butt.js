@@ -1,5 +1,5 @@
 // Buttbot functionality!
-// I LOVE butt
+// I LOVE BUTTS
 
 // secure random number generation is IMPORTANT
 var crypto = require("crypto");
