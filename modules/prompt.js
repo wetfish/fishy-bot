@@ -35,7 +35,7 @@ var prompt =
 
     say: function(message)
     {
-        console.log("Say: " + message);
+        prompt.client.say('#wetfish', message);
     },
 
     load: function(module)
