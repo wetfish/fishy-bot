@@ -39,7 +39,7 @@ var butt =
         
         message = message.join(' ');
         return message;
-    }
+    },
 
     message: function(from, to, message, details)
     {
