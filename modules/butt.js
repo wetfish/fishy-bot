@@ -10,45 +10,59 @@ var butt =
     methods: ['message', 'action'],
     stuff: ['dick', 'butt', 'dong'],
 
-    message: function(from, to, message, details)
+    generate: function(message)
     {
-        if(message.match(/fishy/))
+        message = message.split(' ');
+        var mutated = false;
+
+        for(var i = 0, l = message.length; i < l; i++)
         {
-            message = message.split(' ');
-            var mutated = false;
+            var random = new Buffer(crypto.randomBytes(1)).readUInt8(0);
 
-            for(var i = 0, l = message.length; i < l; i++)
+            if(random <= 44)
             {
-                var random = new Buffer(crypto.randomBytes(1)).readUInt8(0);
+                var plural = new Buffer(crypto.randomBytes(1)).readUInt8(0);
+                var choice = new Buffer(crypto.randomBytes(1)).readUInt8(0) % butt.stuff.length;
+                choice = butt.stuff[choice];
 
-                if(random <= 44)
-                {
-                    var plural = new Buffer(crypto.randomBytes(1)).readUInt8(0);
-                    var choice = new Buffer(crypto.randomBytes(1)).readUInt8(0) % butt.stuff.length;
-                    choice = butt.stuff[choice];
+                if(plural % 2)
+                    choice += "s";
 
-                    if(plural % 2)
-                        choice += "s";
-
-                    message[i] = choice;
-                    mutated = true;
-                }
-                
-                // keep looping forever, lol
-                if(i + 1 == l && !mutated)
-                    i = 0;
+                message[i] = choice;
+                mutated = true;
             }
             
-            message = message.join(' ');
+            // keep looping forever, lol
+            if(i + 1 == l && !mutated)
+                i = 0;
+        }
+        
+        message = message.join(' ');
+        return message;
+    }
 
-            butt.client.say('#wetfish', message);
+    message: function(from, to, message, details)
+    {
+        var chance = new Buffer(crypto.randomBytes(1)).readUInt8(0);
+        
+        if(message.match(/fishy/) || chance >= 244)
+        {
+            message = butt.generate(message);
+            butt.client.say(to, message);
             console.log("["+to+"] <fishy> "+message);
         }
     },
 
     action: function(from, to, message, details)
     {
-        console.log("["+to+"] * "+from+" "+message);
+        var chance = new Buffer(crypto.randomBytes(1)).readUInt8(0);
+        
+        if(message.match(/fishy/) || chance >= 244)
+        {
+            message = butt.generate(message);
+            butt.client.action(to, message);
+            console.log("["+to+"] * "+from+" "+message);
+        }
     },
 
     bind: function()
