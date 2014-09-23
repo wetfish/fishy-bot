@@ -3,8 +3,8 @@ var readline = require('readline');
 var prompt =
 {
     readline: false,
-    core: false,
     client: false,
+    core: false,
     list: ['say', 'load', 'unload', 'reload'],
     
     handle: function(line)
@@ -29,8 +29,6 @@ var prompt =
         {
             console.log("You must specify an action and a command, for example: say hi");
         }
-
-        prompt.readline.prompt(true);
     },
 
     say: function(message)
@@ -56,16 +54,15 @@ var prompt =
 
 module.exports =
 {
-    load: function(core, client)
+    load: function(client, core)
     {
-        prompt.core = core;
         prompt.client = client;
+        prompt.core = core;
         
         // Start the readline interface
         prompt.readline = readline.createInterface(process.stdin, process.stdout);
      
         // Start requesting input
-        prompt.readline.prompt(true);
         prompt.readline.on('line', function(line)
         {
             prompt.handle(line);

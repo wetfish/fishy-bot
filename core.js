@@ -30,7 +30,7 @@ module.exports = (function()
                 // Make sure the loaded module has a load function
                 if(typeof core.loaded[module].load == "function")
                 {
-                    core.loaded[module].load(core, core.client);
+                    core.loaded[module].load(core.client, core);
                 }
                 else
                 {
