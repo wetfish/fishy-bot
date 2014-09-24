@@ -14,10 +14,9 @@ module.exports = (function()
             if(!core.client)
                 core.client = client;
 
-            for(var i = 0, l = modules.length; i < l; i++)
-            {
-                core.load(modules[i]);
-            }
+            modules.forEach(function(e, i, arr) {
+                core.load(e)
+            })
         },
 
         load: function(module)
