@@ -19,7 +19,7 @@ var butt =
         {
             var random = new Buffer(crypto.randomBytes(1)).readUInt8(0);
 
-            if(random <= 44)
+            if(random <= 64)
             {
                 var plural = new Buffer(crypto.randomBytes(1)).readUInt8(0);
                 var choice = new Buffer(crypto.randomBytes(1)).readUInt8(0) % butt.stuff.length;
@@ -45,11 +45,22 @@ var butt =
     {
         var chance = new Buffer(crypto.randomBytes(1)).readUInt8(0);
         
-        if(message.match(/fishy/) || chance >= 244)
+        if(message.match(/fishy/i) || chance > 248)
         {
             message = butt.generate(message);
-            butt.client.say(to, message);
-            console.log("["+to+"] <fishy> "+message);
+
+            // If this is a channel message
+            if(to.charAt(0) == '#')
+            {
+                butt.client.say(to, message);
+                console.log("["+to+"] <fishy> "+message);
+            }
+            // This must be a private message ^_~
+            else
+            {
+                butt.client.say(from, message);
+                console.log("["+from+"] <fishy> "+message);
+            }
         }
     },
 
@@ -57,11 +68,20 @@ var butt =
     {
         var chance = new Buffer(crypto.randomBytes(1)).readUInt8(0);
         
-        if(message.match(/fishy/) || chance >= 244)
+        if(message.match(/fishy/i) || chance > 248)
         {
             message = butt.generate(message);
-            butt.client.action(to, message);
-            console.log("["+to+"] * "+from+" "+message);
+
+            if(to.charAt(0) == '#')
+            {
+                butt.client.action(to, message);
+                console.log("["+to+"] * fishy "+message);
+            }
+            else
+            {
+                butt.client.action(from, message);
+                console.log("["+from+"] * fishy "+message);
+            }
         }
     },
 
