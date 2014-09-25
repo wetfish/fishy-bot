@@ -29,7 +29,7 @@ var butt =
                 if(plural % 2)
                     choice += "s";
 
-                if(caps % 2)
+                if(caps % 4 == 1)
                     choice = choice.toUpperCase();
 
                 message[i] = choice;
