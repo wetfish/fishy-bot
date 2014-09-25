@@ -1,7 +1,7 @@
 var admin =
 {
     // This is a list of admins
-    list: ['rachel@unicorn.sparkle.princess', 'svchost@madtown.madmin'],
+    list: ['rachel@unicorn.sparkle.princess', 'svchost@madmin.madtown'],
     commands: ['say', 'load', 'unload', 'reload'],
     client: false,
     core: false,
