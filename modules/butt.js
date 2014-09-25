@@ -22,11 +22,15 @@ var butt =
             if(random <= 64)
             {
                 var plural = new Buffer(crypto.randomBytes(1)).readUInt8(0);
+                var caps = new Buffer(crypto.randomBytes(1)).readUInt8(0);
                 var choice = new Buffer(crypto.randomBytes(1)).readUInt8(0) % butt.stuff.length;
                 choice = butt.stuff[choice];
 
                 if(plural % 2)
                     choice += "s";
+
+                if(caps % 2)
+                    choice = choice.toUpperCase();
 
                 message[i] = choice;
                 mutated = true;
