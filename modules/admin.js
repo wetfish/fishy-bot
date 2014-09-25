@@ -60,19 +60,19 @@ var admin =
 
     load: function(from, to, module)
     {
-        admin.reply('say', from, to, 'Loading module ' + module + '...');
+        admin.reply('say', from, to, 'Loading ' + module + ' module...');
         admin.core.load(module);
     },
 
     unload: function(from, to, module)
     {
-        admin.reply('say', from, to, 'Unloading module ' + module + '...');
+        admin.reply('say', from, to, 'Unloading ' + module + ' module...');
         admin.core.unload(module);
     },
 
     reload: function(from, to, module)
     {
-        admin.reply('say', from, to, 'Reloading module ' + module + '...');
+        admin.reply('say', from, to, 'Reloading ' + module + ' module...');
         admin.core.reload(module);
     },
 
