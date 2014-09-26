@@ -1,3 +1,4 @@
+var fs = require('fs');
 var http = require('http');
 var querystring = require('querystring');
 
@@ -39,9 +40,18 @@ var github =
             {
                 processPost(request, response, function()
                 {
-                    console.log(request.post);
-                    // Use request.post here
+                    console.log("_!!_ Post request recieved");
+                    console.log(request.headers);
 
+                    fs.appendFile('logs/github.txt', JSON.stringify(request.post) + "\n\n", function (error)
+                    {
+                        if(error)
+                        {
+                            console.log("_Error_ Unable to append file!");
+                            console.log(error);
+                        }
+                    });
+                    
                     response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
                     response.end();
                 });
@@ -67,6 +77,13 @@ module.exports =
     unload: function()
     {
         github.server.close();
+        
+        github.server.on('request', function( req, resp ) { req.socket.end(); });
+        github.server.once('close', function()
+        {
+            // Remove the listeners after the server has shutdown for real.
+            github.server.removeAllListeners();
+        });
         
         delete github;
         delete http;
