@@ -40,9 +40,43 @@ function processPost(request, response, callback) {
 
 var github =
 {
+    client: false,
     server: false,
     port: 1234,
+    channel: '#wetfish',
     events: ['gollum', 'push'],
+
+    groups:
+    [
+        {text: 'couple', 'min': 2, 'max': 2},
+        {text: 'few', 'min': 3, 'max': 4},
+        {text: 'bunch', 'min': 5, 'max': 7},
+        {text: 'lot', 'min': 8, 'max': 12},
+        {text: 'few too many', 'min': 13, 'max': 0x20000000000000},
+    ],
+
+    find_group: function(value)
+    {
+        github.groups.foreach(function(group)
+        {
+            if(value >= group.min && value <= group.max)
+                return group.text;
+        });
+    },
+
+    sort: function(object)
+    {
+        var sortable = [];
+        
+        for(var key in object)
+        {
+            sortable.push([key, object[key]])
+        }
+        
+        sortable.sort(function(a, b) {return a[1] - b[1]});
+
+        return sortable;
+    },
 
     init: function()
     {
@@ -57,10 +91,11 @@ var github =
                     // Calculate SHA hash to verify request
 
                     // Send event to its handler if defined in github.events
-
-                    console.log(request.headers['x-github-event']);
-                    console.log(request.post.pages);
-
+                    if(github.events.indexOf(request.headers['x-github-event']) > -1)
+                    {
+                        github[request.headers['x-github-event']](request.post);
+                    }
+                    
                     // Write to a logfile
                     fs.appendFile('logs/github.txt', JSON.stringify(request.headers) + "\n" + JSON.stringify(request.post) + "\n\n", function (error)
                     {
@@ -84,12 +119,44 @@ var github =
         }).listen(github.port);
     },
 
-    gollum: function()
+    gollum: function(data)
     {
+        var user = data.sender.login;
+        var name = data.repository.name;
+        var page = data.repository.html_url;
+        var action = data.pages[0].action;
+        var actions = [];
 
+        if(data.pages.length == 1)
+        {
+            page = data.pages[0].html_url;
+            
+            var message = "[Github] User "+user+" "+action+" a page on the "+name+" wiki. ( "+page+" )";
+            github.client.say(github.channel, message);
+            console.log(message);
+        }
+
+/*
+        if(data.pages.length < 8)
+        {
+            data.pages.forEach(function(page)
+            {
+                if(typeof actions[page.action] == "undefined")
+                    actions[page.action] = 0;
+
+                actions[page.action]++;
+            });
+
+            
+        }
+        else
+        {
+
+        }
+*/
     },
 
-    push: function()
+    push: function(data)
     {
 
     }
@@ -98,8 +165,9 @@ var github =
 
 module.exports =
 {
-    load: function()
+    load: function(client)
     {
+        github.client = client;
         github.init();
     },
 
