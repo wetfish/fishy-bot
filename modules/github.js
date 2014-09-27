@@ -57,11 +57,13 @@ var github =
 
     find_group: function(value)
     {
-        github.groups.forEach(function(group)
+        for(var i = 0, l = github.groups.length; i < l; i++)
         {
+            var group = github.groups[i];
+
             if(value >= group.min && value <= group.max)
                 return group.text;
-        });
+        }
     },
 
     sort: function(object)
@@ -195,6 +197,10 @@ var github =
                 author = authors[0];
             }
 
+            console.log(data.commits.length);
+            console.log(github.find_group(2));
+            console.log(github.find_group(3));
+            console.log(github.find_group(5));
             var group = github.find_group(data.commits.length);
             message = "[Github] A "+group+" commits were made by "+author+" in the "+name+" project. ( "+page+" )";
         }
