@@ -43,7 +43,7 @@ var github =
     client: false,
     server: false,
     port: 1234,
-    channel: '#wetfish',
+    channel: 'rachel',
     events: ['gollum', 'push'],
 
     groups:
@@ -158,7 +158,20 @@ var github =
 
     push: function(data)
     {
+        var name = data.repository.name;
+        var page = data.repository.html_url;
+        
+        var author = data.commits[0].author.username;
+        var authors = [];
 
+        if(data.commits.length == 1)
+        {
+            page = data.commits[0].url;
+            
+            var message = "[Github] 1 commit was made by "+author+" in the "+name+" project. ( "+page+" )";
+            github.client.say(github.channel, message);
+            console.log(message);
+        }
     }
 };
 
