@@ -52,7 +52,7 @@ var github =
         {text: 'few', 'min': 3, 'max': 4},
         {text: 'bunch', 'min': 5, 'max': 7},
         {text: 'lot', 'min': 8, 'max': 12},
-        {text: 'few too many', 'min': 13, 'max': 0x20000000000000},
+        {text: 'ton', 'min': 13, 'max': 0x20000000000000},
     ],
 
     find_group: function(value)
@@ -162,7 +162,7 @@ var github =
         var page = data.repository.html_url;
         
         var author = data.commits[0].author.username;
-        var authors = [];
+        var authors = {};
 
         if(data.commits.length == 1)
         {
@@ -171,6 +171,31 @@ var github =
             var message = "[Github] 1 commit was made by "+author+" in the "+name+" project. ( "+page+" )";
             github.client.say(github.channel, message);
             console.log(message);
+        }
+        else
+        {
+            data.commits.forEach(function(commit)
+            {
+                if(typeof authors[commit.author.username] == "undefined")
+                    authors[commit.author.username] = 0;
+
+                authors[commit.author.username]++;
+            });
+
+            authors = authors.keys();
+
+            if(authors.length > 1)
+            {
+                var last = authors.pop();
+                author = authors.join(', ');
+                author += " & " + last;
+            }
+            else
+            {
+                author = authors[0];
+            }
+            
+            var message = "[Github] "+data.commits.length+" commits were made by "+author+" in the "+name+" project. ( "+page+" )";
         }
     }
 };
