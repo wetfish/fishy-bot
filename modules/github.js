@@ -172,7 +172,8 @@ var github =
             page = data.commits[0].url;
             
             // Possible exploit: Could you put IRC control characters in the name of a project? xD
-            message = "[Github] A commit was made by "+author+" in the "+name+" project. ( "+page+" )";
+            // Almost certainly an exploit: IRC control characters in a commit message :P
+            message = "[Github] A commit was made by "+author+" in the "+name+" project. ( "+data.commits[0].message+" -- "+page+" )";
         }
         else
         {
