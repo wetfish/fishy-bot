@@ -19,7 +19,7 @@ var butt =
         {
             var random = new Buffer(crypto.randomBytes(1)).readUInt8(0);
 
-            if(random <= 64)
+            if(random < 44)
             {
                 var plural = new Buffer(crypto.randomBytes(1)).readUInt8(0);
                 var caps = new Buffer(crypto.randomBytes(1)).readUInt8(0);
@@ -37,6 +37,7 @@ var butt =
             }
             
             // keep looping forever, lol
+            // TODO:  <lq> rachel: better to pick a randomly-sized subset of the words and mutate those
             if(i + 1 == l && !mutated)
                 i = 0;
         }
@@ -49,7 +50,7 @@ var butt =
     {
         var chance = new Buffer(crypto.randomBytes(1)).readUInt8(0);
         
-        if(message.match(/fishy/i) || chance > 248)
+        if(chance > 249)
         {
             message = butt.generate(message);
 
@@ -72,7 +73,7 @@ var butt =
     {
         var chance = new Buffer(crypto.randomBytes(1)).readUInt8(0);
         
-        if(message.match(/fishy/i) || chance > 248)
+        if(chance > 249)
         {
             message = butt.generate(message);
 

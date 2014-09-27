@@ -40,7 +40,7 @@ var github =
             {
                 processPost(request, response, function()
                 {
-                    console.log("_!!_ Post request recieved");
+                    console.log("_!_ Post request recieved");
                     console.log(request.headers);
 
                     fs.appendFile('logs/github.txt', JSON.stringify(request.post) + "\n\n", function (error)
