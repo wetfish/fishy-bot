@@ -43,7 +43,7 @@ var github =
     client: false,
     server: false,
     port: 1234,
-    channel: 'rachel',
+    channel: '#wetfish',
     events: ['gollum', 'push'],
 
     groups:
@@ -173,7 +173,7 @@ var github =
             
             // Possible exploit: Could you put IRC control characters in the name of a project? xD
             // Almost certainly an exploit: IRC control characters in a commit message :P
-            message = "[Github] A commit was made by "+author+" in the "+name+" project. ( "+data.commits[0].message+" -- "+page+" )";
+            message = "[Github] A commit was made by "+author+" in the "+name+" project. ( "+data.commits[0].message+" | "+page+" )";
         }
         else
         {
