@@ -50,9 +50,9 @@ var github =
     [
         {text: 'couple', 'min': 2, 'max': 2},
         {text: 'few', 'min': 3, 'max': 4},
-        {text: 'bunch', 'min': 5, 'max': 7},
-        {text: 'lot', 'min': 8, 'max': 12},
-        {text: 'ton', 'min': 13, 'max': 0x20000000000000},
+        {text: 'bunch of', 'min': 5, 'max': 7},
+        {text: 'lot of', 'min': 8, 'max': 12},
+        {text: 'ton of', 'min': 13, 'max': 0x20000000000000},
     ],
 
     find_group: function(value)
@@ -168,7 +168,7 @@ var github =
         {
             page = data.commits[0].url;
             
-            var message = "[Github] 1 commit was made by "+author+" in the "+name+" project. ( "+page+" )";
+            var message = "[Github] A commit was made by "+author+" in the "+name+" project. ( "+page+" )";
             github.client.say(github.channel, message);
             console.log(message);
         }
@@ -194,8 +194,9 @@ var github =
             {
                 author = authors[0];
             }
-            
-            var message = "[Github] "+data.commits.length+" commits were made by "+author+" in the "+name+" project. ( "+page+" )";
+
+            var group = github.find_group(data.commits.length);
+            var message = "[Github] A "+group+" commits were made by "+author+" in the "+name+" project. ( "+page+" )";
         }
     }
 };
