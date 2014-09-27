@@ -16,8 +16,19 @@ function processPost(request, response, callback) {
             }
         });
 
-        request.on('end', function() {
-            request.post = querystring.parse(queryData);
+        request.on('end', function()
+        {
+            try
+            {
+                // Check if the server responded with JSON
+                request.post = JSON.parse(queryData);
+            }
+            catch(error)
+            {
+                // Otherwise, process the post request normally
+                request.post = querystring.parse(queryData);
+            }
+            
             callback();
         });
 
@@ -31,6 +42,7 @@ var github =
 {
     server: false,
     port: 1234,
+    events: ['gollum', 'push'],
 
     init: function()
     {
@@ -41,9 +53,16 @@ var github =
                 processPost(request, response, function()
                 {
                     console.log("_!_ Post request recieved");
-                    console.log(request.headers);
 
-                    fs.appendFile('logs/github.txt', JSON.stringify(request.post) + "\n\n", function (error)
+                    // Calculate SHA hash to verify request
+
+                    // Send event to its handler if defined in github.events
+
+                    console.log(request.headers['x-github-event']);
+                    console.log(request.post.pages);
+
+                    // Write to a logfile
+                    fs.appendFile('logs/github.txt', JSON.stringify(request.headers) + "\n" + JSON.stringify(request.post) + "\n\n", function (error)
                     {
                         if(error)
                         {
@@ -63,6 +82,16 @@ var github =
             }
 
         }).listen(github.port);
+    },
+
+    gollum: function()
+    {
+
+    },
+
+    push: function()
+    {
+
     }
 };
 
