@@ -57,7 +57,7 @@ var github =
 
     find_group: function(value)
     {
-        github.groups.foreach(function(group)
+        github.groups.forEach(function(group)
         {
             if(value >= group.min && value <= group.max)
                 return group.text;
@@ -160,6 +160,7 @@ var github =
     {
         var name = data.repository.name;
         var page = data.repository.html_url;
+        var message;
         
         var author = data.commits[0].author.username;
         var authors = {};
@@ -167,10 +168,7 @@ var github =
         if(data.commits.length == 1)
         {
             page = data.commits[0].url;
-            
-            var message = "[Github] A commit was made by "+author+" in the "+name+" project. ( "+page+" )";
-            github.client.say(github.channel, message);
-            console.log(message);
+            message = "[Github] A commit was made by "+author+" in the "+name+" project. ( "+page+" )";
         }
         else
         {
@@ -182,7 +180,7 @@ var github =
                 authors[commit.author.username]++;
             });
 
-            authors = authors.keys();
+            authors = Object.keys(authors);
 
             if(authors.length > 1)
             {
@@ -196,8 +194,11 @@ var github =
             }
 
             var group = github.find_group(data.commits.length);
-            var message = "[Github] A "+group+" commits were made by "+author+" in the "+name+" project. ( "+page+" )";
+            message = "[Github] A "+group+" commits were made by "+author+" in the "+name+" project. ( "+page+" )";
         }
+    
+        github.client.say(github.channel, message);
+        console.log(message);
     }
 };
 
