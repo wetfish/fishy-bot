@@ -6,10 +6,13 @@ module.exports = (function()
     var core =
     {
         client: false,
+        secrets: false,
         loaded: {},
 
-        init: function(client, modules)
+        init: function(client, modules, secrets)
         {
+            core.secrets = secrets;
+            
             // Only set the client if it hasn't been initialized yet
             if(!core.client)
                 core.client = client;

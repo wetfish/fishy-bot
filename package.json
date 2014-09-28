@@ -27,7 +27,7 @@
     {
         "irc": "*",
         "github": "*",
-        "prompt": "*"
+        "buffer-equal-constant-time": "*"
     },
 
     "license": "GPL"

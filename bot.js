@@ -2,6 +2,7 @@ var irc = require("irc");
 
 // Get server configuration
 var config = require("./config/server.js");
+var secrets = require("./config/secret.js");
 
 // Connect to IRC
 var client = new irc.Client(config.server, config.name, config);
@@ -13,5 +14,5 @@ var modules = require("./config/modules.js");
 var core = require("./core.js");
 
 // Initialize modules with the existing client
-core.init(client, modules);
+core.init(client, modules, secrets);
 

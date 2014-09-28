@@ -1,6 +1,8 @@
 var fs = require('fs');
 var http = require('http');
 var querystring = require('querystring');
+var crypto = require('crypto');
+var compare = require('buffer-equal-constant-time');
 
 function processPost(request, response, callback) {
     var queryData = "";
@@ -40,6 +42,7 @@ function processPost(request, response, callback) {
 
 var github =
 {
+    core: false,
     client: false,
     server: false,
     port: 1234,
@@ -91,22 +94,30 @@ var github =
                     console.log("_!_ Post request recieved");
 
                     // Calculate SHA hash to verify request
+                    var verified = github.verify(request.headers['x-hub-signature'], request.post);
 
-                    // Send event to its handler if defined in github.events
-                    if(github.events.indexOf(request.headers['x-github-event']) > -1)
+                    if(verified)
                     {
-                        github[request.headers['x-github-event']](request.post);
-                    }
-                    
-                    // Write to a logfile
-                    fs.appendFile('logs/github.txt', JSON.stringify(request.headers) + "\n" + JSON.stringify(request.post) + "\n\n", function (error)
-                    {
-                        if(error)
+                        // Send event to its handler if defined in github.events
+                        if(github.events.indexOf(request.headers['x-github-event']) > -1)
                         {
-                            console.log("_Error_ Unable to append file!");
-                            console.log(error);
+                            github[request.headers['x-github-event']](request.post);
                         }
-                    });
+                        
+                        // Write to a logfile
+                        fs.appendFile('logs/github.txt', JSON.stringify(request.headers) + "\n" + JSON.stringify(request.post) + "\n\n", function (error)
+                        {
+                            if(error)
+                            {
+                                console.log("_Error_ Unable to append file!");
+                                console.log(error);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        console.log(verified, "OH NO UNVVERIFIED!~");
+                    }
                     
                     response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
                     response.end();
@@ -121,6 +132,16 @@ var github =
         }).listen(github.port);
     },
 
+    verify: function(hash, payload)
+    {
+        hash = hash.split('=');
+
+        var calculated = crypto.createHmac(hash[0], github.core.secrets.github_key).update(JSON.stringify(payload)).digest('hex')
+        var comparison = compare(new Buffer(hash[1]), new Buffer(calculated));
+
+        return comparison;
+    },
+
     gollum: function(data)
     {
         var user = data.sender.login;
@@ -133,7 +154,7 @@ var github =
         {
             page = data.pages[0].html_url;
             
-            var message = "[Github] User "+user+" "+action+" a page on the "+name+" wiki. ( "+page+" )";
+            var message = "[GitHub] User "+user+" "+action+" a page on the "+name+" wiki. ( "+page+" )";
             github.client.say(github.channel, message);
             console.log(message);
         }
@@ -173,7 +194,7 @@ var github =
             
             // Possible exploit: Could you put IRC control characters in the name of a project? xD
             // Almost certainly an exploit: IRC control characters in a commit message :P
-            message = "[Github] A commit was made by "+author+" in the "+name+" project. ( "+data.commits[0].message+" | "+page+" )";
+            message = "[GitHub] A commit was made by "+author+" in the "+name+" project. ( "+data.commits[0].message+" | "+page+" )";
         }
         else
         {
@@ -198,12 +219,8 @@ var github =
                 author = authors[0];
             }
 
-            console.log(data.commits.length);
-            console.log(github.find_group(2));
-            console.log(github.find_group(3));
-            console.log(github.find_group(5));
             var group = github.find_group(data.commits.length);
-            message = "[Github] A "+group+" commits were made by "+author+" in the "+name+" project. ( "+page+" )";
+            message = "[GitHub] A "+group+" commits were made by "+author+" in the "+name+" project. ( "+page+" )";
         }
     
         github.client.say(github.channel, message);
@@ -214,9 +231,10 @@ var github =
 
 module.exports =
 {
-    load: function(client)
+    load: function(client, core)
     {
         github.client = client;
+        github.core = core;
         github.init();
     },
 
@@ -231,9 +249,16 @@ module.exports =
             github.server.removeAllListeners();
         });
         
-        delete github;
+        // Delete node modules
+        delete fs;
         delete http;
         delete querystring;
+        delete crypto;
+        delete compare;
+        
+        // Delete defined variables
         delete processPost;
+        delete github;
+
     },
 }
