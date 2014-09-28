@@ -31,7 +31,7 @@ function processPost(request, response, callback) {
                 request.post = querystring.parse(queryData);
             }
             
-            callback();
+            callback(request, response);
         });
 
     } else {
@@ -89,39 +89,7 @@ var github =
         {
             if(request.method == 'POST')
             {
-                processPost(request, response, function()
-                {
-                    console.log("_!_ Post request recieved");
-
-                    // Calculate SHA hash to verify request
-                    var verified = github.verify(request.headers['x-hub-signature'], request.post);
-
-                    if(verified)
-                    {
-                        // Send event to its handler if defined in github.events
-                        if(github.events.indexOf(request.headers['x-github-event']) > -1)
-                        {
-                            github[request.headers['x-github-event']](request.post);
-                        }
-                        
-                        // Write to a logfile
-                        fs.appendFile('logs/github.txt', JSON.stringify(request.headers) + "\n" + JSON.stringify(request.post) + "\n\n", function (error)
-                        {
-                            if(error)
-                            {
-                                console.log("_Error_ Unable to append file!");
-                                console.log(error);
-                            }
-                        });
-                    }
-                    else
-                    {
-                        console.log(verified, "OH NO UNVVERIFIED!~");
-                    }
-                    
-                    response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
-                    response.end();
-                });
+                processPost(request, response, github.handler);
             }
             else
             {
@@ -130,6 +98,36 @@ var github =
             }
 
         }).listen(github.port);
+    },
+
+    handler: function(request, response)
+    {
+        console.log("_!_ Post request recieved");
+
+        // Calculate SHA hash to verify request
+        var verified = github.verify(request.headers['x-hub-signature'], request.post);
+
+        if(verified)
+        {
+            // Send event to its handler if defined in github.events
+            if(github.events.indexOf(request.headers['x-github-event']) > -1)
+            {
+                github[request.headers['x-github-event']](request.post);
+            }
+            
+            // Write to a logfile
+            fs.appendFile('logs/github.txt', JSON.stringify(request.headers) + "\n" + JSON.stringify(request.post) + "\n\n", function (error)
+            {
+                if(error)
+                {
+                    console.log("_Error_ Unable to append file!");
+                    console.log(error);
+                }
+            });
+        }
+        
+        response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
+        response.end();
     },
 
     verify: function(hash, payload)
