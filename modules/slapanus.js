@@ -206,7 +206,6 @@ var anus =
         setTimeout(function() { anus.reply('say', from, to, "fishy opens his mouth!"); }, 3000);
         setTimeout(function() { anus.reply('say', from, to, "HE TAKES THE LOAD..."); }, 6000);
         setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
-        setTimeout(function() { anus.reply('action', from, to, "3S8U11P4E6R12!9!8 11J8O12B9 "+target+"!!"); }, 10000);
         setTimeout(function() { anus.client.send('KICK', to, target, "3S8U11P4E6R10C9O8C4K3S8U11P4E6R10C9O8C4K3S8U11P4E6R10C9O8C4K3S8U11P4E6R10C9O8C4K3S8U11P4E6R10C9O8C4K"); }, 12000);
     },
 
