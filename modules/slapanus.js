@@ -25,6 +25,7 @@ var anus =
     client: false,
     core: false,
     users: [],
+    wait: false,
     
     // Accept commands from anus input!
     // Based on user/hostname
@@ -75,6 +76,20 @@ var anus =
         }
     },
 
+    waiting: function()
+    {
+        if(anus.wait)
+        {
+            console.log("Can't slap, won't slap.");
+            return true;
+        }
+
+        anus.wait = setTimeout(function()
+        {
+            anus.wait = false;
+        }, 60 * 1000);
+    },
+
     random_target: function()
     {
         var index = crypto.randomBytes(1).readUInt8(0) % anus.users.length;
@@ -83,6 +98,8 @@ var anus =
 
     slapanus: function(from, to, message)
     {
+        if(anus.waiting()) return;
+        
         // Pick a random target
         var target = anus.random_target();
 
@@ -106,6 +123,8 @@ var anus =
 
     superslapanus: function(from, to, message)
     {
+        if(anus.waiting()) return;
+
         // Pick a random target
         var target = anus.random_target();
 
