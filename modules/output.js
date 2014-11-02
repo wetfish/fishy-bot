@@ -1,7 +1,7 @@
 var output =
 {
     client: false,
-    methods: ['message', 'action', 'join', 'part', 'quit', 'nick', 'kick'],
+    methods: ['message', 'action', 'join', 'part', 'quit', 'nick', 'kick', 'error'],
 
     message: function(from, to, message, details)
     {
@@ -36,6 +36,12 @@ var output =
     kick: function(channel, user, by, reason)
     {
         console.log("["+channel+"] User "+user+" kicked by "+by+" (Message: "+reason+")");
+    },
+
+    error: function(error)
+    {
+        console.log("/!\\ ERROR #"+error.rawCommand+": "+error.command+" /!\\");
+        output.client.say('rachel', JSON.stringify(error));
     },
 
     bind: function()
