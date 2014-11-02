@@ -87,7 +87,7 @@ var anus =
         }
 
         if(typeof timeout == "undefined")
-            timeout = 0;
+            timeout = 1;
 
         var date = new Date();
         anus.timeout = new Date(date.getTime() + (timeout * 60 * 1000));
