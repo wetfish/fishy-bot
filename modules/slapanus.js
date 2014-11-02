@@ -1,3 +1,7 @@
+// secure random number generation is IMPORTANT
+var crypto = require("crypto");
+
+
 /* Classic #wetfish commands
  *
  * slapanus
@@ -12,19 +16,16 @@ How to perform the deed.
 !supersuckurdick - I don't know how or WHY, it's just here OKAY?
 !superslapaniggasanus - Nigga you better shut yo gatdam lip.
 
-
-
 *
 *
 */
 
 var anus =
 {
-    // This is a list of anuss
-    list: ['rachel@unicorn.sparkle.princess', 'svchost@manus.madtown'],
     commands: ['slapanus', 'superslapanus'],
     client: false,
     core: false,
+    users: [],
     
     // Accept commands from anus input!
     // Based on user/hostname
@@ -38,48 +39,83 @@ var anus =
             anus.client[type](to, message);
             console.log("["+to+"] <fishy> "+message);
         }
-        // This must be a private message ^_~
-        else
-        {
-            anus.client[type](from, message);
-            console.log("["+from+"] <fishy> "+message);
-        }
     },
 
     message: function(from, to, message, details)
     {
         var userhost = details.nick + '@' + details.host;
 
-        // If this user appears in the anus list
-        if(anus.list.indexOf(userhost) > -1)
+        // anus commands are prefixed with !
+        if(message.charAt(0) == "!")
         {
-            // anus commands are prefixed with !
-            if(message.charAt(0) == "!")
+            message = message.substr(1);
+            message = message.split(' ');
+
+            var command = message.shift();
+
+            // If this command is valid
+            if(anus.commands.indexOf(command) > -1)
             {
-                message = message.substr(1);
-                message = message.split(' ');
-
-                var command = message.shift();
-
-                // If this command is valid
-                if(anus.commands.indexOf(command) > -1)
-                {
-                    message = message.join(' ');
-                    anus[command](from, to, message);
-                }
+                message = message.join(' ');
+                anus[command](from, to, message);
             }
+        }
+    },
+
+    names: function(channel, users)
+    {
+        anus.users = [];
+        
+        for (var i = 0, keys = Object.keys(users), l = keys.length; i < l; ++i)
+        {
+            var user = keys[i];
+
+            // Don't slap yourself
+            if(user != "fishy")
+                anus.users.push(user);
         }
     },
 
     slapanus: function(from, to, message)
     {
-        anus.reply('say', from, to, message);
+        // Pick a random target
+        var index = crypto.randomBytes(1).readUInt8(0) % anus.users.length;
+        var target = anus.users[index];
+
+        // Refresh userlist from the server
+        anus.client.send('NAMES', '#wetfish');
+
+        // Wait a second
+        setTimeout(function()
+        {
+            // Regenerate target and hope we recieved a NAMES response by now
+            index = crypto.randomBytes(1).readUInt8(0) % anus.users.length;
+            target = anus.users[index];
+
+            anus.reply('say', from, to, "4It's Anus Slapping Time!");
+        }, 1000);
+
+        setTimeout(function() { anus.reply('say', from, to, "fishy spits onto the floor!"); }, 3000);
+        setTimeout(function() { anus.reply('say', from, to, "The saliva reads..."); }, 6000);
+        setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
+        setTimeout(function() { anus.reply('action', from, to, "slaps "+target+"'s anus!"); }, 10000);
     },
 
     superslapanus: function(from, to, module)
     {
-        anus.reply('say', from, to, 'Loading ' + module + ' module...');
-        anus.core.load(module);
+//        anus.reply('say', from, to, 'Loading ' + module + ' module...');
+    },
+
+    bind: function()
+    {
+        anus.client.addListener('message', anus.message);
+        anus.client.addListener('names', anus.names);
+    },
+
+    unbind: function()
+    {
+        anus.client.removeListener('message', anus.message);
+        anus.client.removeListener('names', anus.names);
     }
 }
 
@@ -96,5 +132,6 @@ module.exports =
     {
         anus.unbind();
         delete anus;
-    },
+        delete crypto;
+   },
 }
