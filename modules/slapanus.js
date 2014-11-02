@@ -1,7 +1,6 @@
 // secure random number generation is IMPORTANT
 var crypto = require("crypto");
 
-
 /* Classic #wetfish commands
  *
  * slapanus
@@ -22,7 +21,7 @@ How to perform the deed.
 
 var anus =
 {
-    commands: ['slapanus', 'superslapanus'],
+    commands: ['slapanus', 'superslapanus', 'superslapanusv2', 'supersuckurdick', 'superslapaniggasanus'],
     client: false,
     core: false,
     users: [],
@@ -76,11 +75,16 @@ var anus =
         }
     },
 
+    random_target: function()
+    {
+        var index = crypto.randomBytes(1).readUInt8(0) % anus.users.length;
+        return anus.users[index];
+    },
+
     slapanus: function(from, to, message)
     {
         // Pick a random target
-        var index = crypto.randomBytes(1).readUInt8(0) % anus.users.length;
-        var target = anus.users[index];
+        var target = anus.random_target();
 
         // Refresh userlist from the server
         anus.client.send('NAMES', '#wetfish');
@@ -89,8 +93,7 @@ var anus =
         setTimeout(function()
         {
             // Regenerate target and hope we recieved a NAMES response by now
-            index = crypto.randomBytes(1).readUInt8(0) % anus.users.length;
-            target = anus.users[index];
+            target = anus.random_target();
 
             anus.reply('say', from, to, "4It's Anus Slapping Time!");
         }, 1000);
@@ -101,9 +104,97 @@ var anus =
         setTimeout(function() { anus.reply('action', from, to, "slaps "+target+"'s anus!"); }, 10000);
     },
 
-    superslapanus: function(from, to, module)
+    superslapanus: function(from, to, message)
     {
-//        anus.reply('say', from, to, 'Loading ' + module + ' module...');
+        // Pick a random target
+        var target = anus.random_target();
+
+        // Refresh userlist from the server
+        anus.client.send('NAMES', '#wetfish');
+
+        // Wait a second
+        setTimeout(function()
+        {
+            // Regenerate target and hope we recieved a NAMES response by now
+            target = anus.random_target();
+
+            anus.reply('say', from, to, "4IT'S 3S8U11P4E6R12!9!8 4ANUS SLAPPING TIME!");
+        }, 1000);
+
+        setTimeout(function() { anus.reply('say', from, to, "fishy spits onto the floor!"); }, 3000);
+        setTimeout(function() { anus.reply('say', from, to, "The saliva reads..."); }, 6000);
+        setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
+        setTimeout(function() { anus.reply('action', from, to, "3S8U11P4E6R12!9!8 slaps "+target+"'s anus!!"); }, 10000);
+        setTimeout(function() { anus.client.send('KICK', to, target, "3S8U11P4E6R10A9N8A4L3S8U11P4E6R10A9N8A4L3S8U11P4E6R10A9N8A4L3S8U11P4E6R10A9N8A4L3S8U11P4E6R10A9N8A4L"); }, 12000);
+    },
+
+    superslapanusv2: function(from, to, message)
+    {
+        // Pick a random target
+            var target = anus.random_target();
+
+        // Refresh userlist from the server
+        anus.client.send('NAMES', '#wetfish');
+
+        // Wait a second
+        setTimeout(function()
+        {
+            // Regenerate target and hope we recieved a NAMES response by now
+            target = anus.random_target();
+
+            anus.reply('say', from, to, "4It's Anus Slapping Time!");
+        }, 1000);
+
+        setTimeout(function() { anus.reply('say', from, to, "fishy spits onto the floor!"); }, 3000);
+        setTimeout(function() { anus.reply('say', from, to, "The saliva reads..."); }, 6000);
+        setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
+        setTimeout(function() { anus.reply('action', from, to, "slaps "+target+"'s anus!"); }, 10000);
+    },
+
+    supersuckurdick: function(from, to, message)
+    {
+        // Pick a random target
+        var target = anus.random_target();
+
+        // Refresh userlist from the server
+        anus.client.send('NAMES', '#wetfish');
+
+        // Wait a second
+        setTimeout(function()
+        {
+            // Regenerate target and hope we recieved a NAMES response by now
+            target = anus.random_target();
+
+            anus.reply('say', from, to, "4It's Anus Slapping Time!");
+        }, 1000);
+
+        setTimeout(function() { anus.reply('say', from, to, "fishy spits onto the floor!"); }, 3000);
+        setTimeout(function() { anus.reply('say', from, to, "The saliva reads..."); }, 6000);
+        setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
+        setTimeout(function() { anus.reply('action', from, to, "slaps "+target+"'s anus!"); }, 10000);
+    },
+
+    superslapaniggasanus: function(from, to, message)
+    {
+        // Pick a random target
+        var target = anus.random_target();
+
+        // Refresh userlist from the server
+        anus.client.send('NAMES', '#wetfish');
+
+        // Wait a second
+        setTimeout(function()
+        {
+            // Regenerate target and hope we recieved a NAMES response by now
+            target = anus.random_target();
+
+            anus.reply('say', from, to, "4It's Anus Slapping Time!");
+        }, 1000);
+
+        setTimeout(function() { anus.reply('say', from, to, "fishy spits onto the floor!"); }, 3000);
+        setTimeout(function() { anus.reply('say', from, to, "The saliva reads..."); }, 6000);
+        setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
+        setTimeout(function() { anus.reply('action', from, to, "slaps "+target+"'s anus!"); }, 10000);
     },
 
     bind: function()
