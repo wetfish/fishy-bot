@@ -26,6 +26,7 @@ var anus =
     core: false,
     users: [],
     wait: false,
+    timeout: false,
     
     // Accept commands from anus input!
     // Based on user/hostname
@@ -76,18 +77,26 @@ var anus =
         }
     },
 
-    waiting: function()
+    waiting: function(timeout)
     {
         if(anus.wait)
         {
-            console.log("Can't slap, won't slap.");
+            var timeout = (anus.timeout.getTime() - new Date().getTime()) / 1000;
+            console.log("Can't slap, won't slap. ("+timeout+" seconds remaining)");
             return true;
         }
+
+        if(typeof timeout == "undefined")
+            timeout = 0;
+
+        var date = new Date();
+        anus.timeout = new Date(date.getTime() + (timeout * 60 * 1000));
 
         anus.wait = setTimeout(function()
         {
             anus.wait = false;
-        }, 60 * 1000);
+            anus.timeout = false;
+        }, timeout * 60 * 1000);
     },
 
     random_target: function()
@@ -123,7 +132,7 @@ var anus =
 
     superslapanus: function(from, to, message)
     {
-        if(anus.waiting()) return;
+        if(anus.waiting(5)) return;
 
         // Pick a random target
         var target = anus.random_target();
@@ -149,7 +158,7 @@ var anus =
 
     superslapanusv2: function(from, to, message)
     {
-        if(anus.waiting()) return;
+        if(anus.waiting(5)) return;
 
         // Pick a random target
         var target = anus.random_target();
@@ -176,7 +185,7 @@ var anus =
 
     supersuckurdick: function(from, to, message)
     {
-        if(anus.waiting()) return;
+        if(anus.waiting(2)) return;
         
         // Pick a random target
         var target = anus.random_target();
@@ -203,7 +212,7 @@ var anus =
 
     superslapaniggasanus: function(from, to, message)
     {
-        if(anus.waiting()) return;
+        if(anus.waiting(10)) return;
         
         // Pick a random target
         var target = anus.random_target();
