@@ -40,6 +40,11 @@ var anus =
             anus.client[type](to, message);
             console.log("["+to+"] <fishy> "+message);
         }
+        else
+        {
+            anus.client[type](from, message);
+            console.log("["+from+"] <fishy> "+message);
+        }
     },
 
     message: function(from, to, message, details)
@@ -82,8 +87,7 @@ var anus =
         if(anus.wait)
         {
             var timeout = (anus.timeout.getTime() - new Date().getTime()) / 1000;
-            console.log("Can't slap, won't slap. ("+timeout+" seconds remaining)");
-            return true;
+            return timeout;
         }
 
         if(typeof timeout == "undefined")
@@ -107,7 +111,13 @@ var anus =
 
     slapanus: function(from, to, message)
     {
-        if(anus.waiting()) return;
+        var timeout = anus.waiting();
+        
+        if(timeout)
+        {
+            anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
+            return;
+        }
         
         // Pick a random target
         var target = anus.random_target();
@@ -132,8 +142,14 @@ var anus =
 
     superslapanus: function(from, to, message)
     {
-        if(anus.waiting(5)) return;
-
+        var timeout = anus.waiting(5);
+        
+        if(timeout)
+        {
+            anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
+            return;
+        }
+        
         // Pick a random target
         var target = anus.random_target();
 
@@ -158,8 +174,14 @@ var anus =
 
     superslapanusv2: function(from, to, message)
     {
-        if(anus.waiting(5)) return;
-
+        var timeout = anus.waiting(5);
+        
+        if(timeout)
+        {
+            anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
+            return;
+        }
+        
         // Pick a random target
         var target = anus.random_target();
 
@@ -185,8 +207,14 @@ var anus =
 
     supersuckurdick: function(from, to, message)
     {
-        if(anus.waiting(2)) return;
-        
+        var timeout = anus.waiting(2);
+
+        if(timeout)
+        {
+            anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
+            return;
+        }
+
         // Pick a random target
         var target = anus.random_target();
 
@@ -211,7 +239,13 @@ var anus =
 
     superslapaniggasanus: function(from, to, message)
     {
-        if(anus.waiting(10)) return;
+        var timeout = anus.waiting(10);
+
+        if(timeout)
+        {
+            anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
+            return;
+        }
         
         // Pick a random target
         var target = anus.random_target();
