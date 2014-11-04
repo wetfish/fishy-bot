@@ -201,7 +201,7 @@ var anus =
         setTimeout(function() { anus.reply('say', from, to, "fishy spits onto the floor!"); }, 3000);
         setTimeout(function() { anus.reply('say', from, to, "The saliva reads..."); }, 6000);
         setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
-        setTimeout(function() { anus.reply('action', from, to, " 6,4S13,07U12,08P3,09E8,12R slaps "+target+" anus!!!!"); }, 10000);
+        setTimeout(function() { anus.reply('action', from, to, " 6,4S13,07U12,08P3,09E8,12R slaps "+target+"'s anus!!!!"); }, 10000);
         setTimeout(function() { anus.client.send('KICK', to, target, "6,4S13,07U12,08P3,09E8,12R7,13A4,06N6,04A13,07L12,08S3,09U8,12P7,13E4,06R6,04A13,07N12,08A3,09L8,12S7,13U4,06P6,04E13,07R12,08A3,09N8,12A7,13L4,06S6,04U13,07P12,08E3,09R8,12A7,13N4,06A6,04L13,07S12,08U3,09P8,12E7,13R4,06A6,04N13,07A12,08L3,09S8,12U7,13P4,06E6,04R13,07A12,08N3,09A8,12L"); }, 12000);
     },
 
