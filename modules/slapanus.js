@@ -57,7 +57,7 @@ var anus =
             message = message.substr(1);
             message = message.split(' ');
 
-            var command = message.shift();
+            var command = message.shift().toString().toLowerCase();
 
             // If this command is valid
             if(anus.commands.indexOf(command) > -1)
