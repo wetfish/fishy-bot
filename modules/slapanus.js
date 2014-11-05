@@ -103,8 +103,31 @@ var anus =
         }, timeout * 60 * 1000);
     },
 
-    random_target: function()
+    random_target: function(from, message)
     {
+        // If there's a potential target
+        if(message)
+        {
+            var message = message.split(' ');
+            var action = crypto.randomBytes(1).readUInt8(0) % 3;
+
+            // Attack the target
+            if(action == 0)
+            {
+                // If the target doesn't exist
+                if(anus.users.indexOf(message[0]) < 0)
+                    return from;
+
+                return message[0];
+            }
+            
+            // Attack the caster
+            else if(action == 1)
+                return from;
+
+            // Else, use the default behavior
+        }
+        
         var index = crypto.randomBytes(1).readUInt8(0) % anus.users.length;
         return anus.users[index];
     },
@@ -120,7 +143,7 @@ var anus =
         }
         
         // Pick a random target
-        var target = anus.random_target();
+        var target = anus.random_target(from, message);
 
         // Refresh userlist from the server
         anus.client.send('NAMES', '#wetfish');
@@ -129,7 +152,7 @@ var anus =
         setTimeout(function()
         {
             // Regenerate target and hope we recieved a NAMES response by now
-            target = anus.random_target();
+            target = anus.random_target(from, message);
 
             anus.reply('say', from, to, "4It's Anus Slapping Time!");
         }, 1000);
@@ -151,7 +174,7 @@ var anus =
         }
         
         // Pick a random target
-        var target = anus.random_target();
+        var target = anus.random_target(from, message);
 
         // Refresh userlist from the server
         anus.client.send('NAMES', '#wetfish');
@@ -160,7 +183,7 @@ var anus =
         setTimeout(function()
         {
             // Regenerate target and hope we recieved a NAMES response by now
-            target = anus.random_target();
+            target = anus.random_target(from, message);
 
             anus.reply('say', from, to, "4IT'S 3S8U11P4E6R12!9!8 4ANUS SLAPPING TIME!");
         }, 1000);
@@ -183,7 +206,7 @@ var anus =
         }
         
         // Pick a random target
-        var target = anus.random_target();
+        var target = anus.random_target(from, message);
 
         // Refresh userlist from the server
         anus.client.send('NAMES', '#wetfish');
@@ -192,7 +215,7 @@ var anus =
         setTimeout(function()
         {
             // Regenerate target and hope we recieved a NAMES response by now
-            target = anus.random_target();
+            target = anus.random_target(from, message);
 
             anus.reply('say', from, to, "6,4I13,07T12,08S3,09 8,12S7,13U4,06P6,04E13,07R12,08 3,09S8,12L7,13A4,06P6,04 13,07A12,08N3,09U8,12S7,13 4,06v6,04213,07 12,08!3,09!8,12!7,13!4,06!6,04!13,07!12,08!3,09!");
         }, 1000);
@@ -216,7 +239,7 @@ var anus =
         }
 
         // Pick a random target
-        var target = anus.random_target();
+        var target = anus.random_target(from, message);
 
         // Refresh userlist from the server
         anus.client.send('NAMES', '#wetfish');
@@ -225,7 +248,7 @@ var anus =
         setTimeout(function()
         {
             // Regenerate target and hope we recieved a NAMES response by now
-            target = anus.random_target();
+            target = anus.random_target(from, message);
 
             anus.reply('say', from, to, "9IT'S 3S8U11P4E6R12!9!8 9SUCK UR DICK TIME!");
         }, 1000);
@@ -248,7 +271,7 @@ var anus =
         }
         
         // Pick a random target
-        var target = anus.random_target();
+        var target = anus.random_target(from, message);
 
         // Refresh userlist from the server
         anus.client.send('NAMES', '#wetfish');
@@ -257,7 +280,7 @@ var anus =
         setTimeout(function()
         {
             // Regenerate target and hope we recieved a NAMES response by now
-            target = anus.random_target();
+            target = anus.random_target(from, message);
 
             anus.reply('say', from, to, "1IT'S SUPER SLAP A NIGGAS ANUS TIME!!!");
         }, 1000);
