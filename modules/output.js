@@ -41,7 +41,7 @@ var output =
     error: function(error)
     {
         console.log("/!\\ ERROR #"+error.rawCommand+": "+error.command+" /!\\");
-        output.client.say('rachel', JSON.stringify(error));
+        console.log(JSON.stringify(error));
     },
 
     bind: function()
