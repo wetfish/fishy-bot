@@ -44,9 +44,15 @@ var topic =
         }
     },
 
+    change: function(channel, message, set_by)
+    {
+        topic.list.push({channel: channel, message: message, set_by: set_by});
+    },
+
     log: function(from, to, message)
     {
-        console.log(from, to, message);
+        console.log("---------", from, to, "---------")
+        console.log(topic.list);
     },
 
     restore: function(from, to, message)
@@ -77,11 +83,13 @@ var topic =
     bind: function()
     {
         topic.client.addListener('message', topic.message);
+        topic.client.addListener('topic', topic.change);
     },
 
     unbind: function()
     {
         topic.client.removeListener('message', topic.message);
+        topic.client.removeListener('topic', topic.change);
     }
 }
 
