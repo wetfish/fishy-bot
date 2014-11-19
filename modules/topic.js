@@ -4,7 +4,7 @@ var topic =
 {
     // This is a list of topics
     list: [],
-    actions: ['log', 'restore', 'set', 'append', 'prepend', 'replace'],
+    actions: ['log', 'restore', 'replace', 'set', 'append', 'prepend'],
     client: false,
     core: false,
     
@@ -31,6 +31,34 @@ var topic =
         {
             console.log("/!\\ Error Saving Logfile /!\\", error);
         }
+    },
+
+    // Helper function to parse topic sections
+    parse: function(text)
+    {
+        var sections = [];
+        var pattern = /\[([^\[\]]+)\]/g;
+        var match;
+
+        while(match = pattern.exec(text))
+        {
+            sections.push(match[1].trim());
+        }
+        
+        return sections;
+    },
+
+    // Helper function to build topic strings
+    build: function(sections)
+    {
+        var output = [];
+        
+        for(var i = 0, l = sections.length; i < l; i++)
+        {
+            output.push('[ ' + sections[i] + ' ]');
+        }
+
+        return output.join(' ');
     },
 
     // This really should be a core function or something
@@ -112,6 +140,31 @@ var topic =
         topic.client.send('TOPIC', '#wetfish', topic.list[index].message);
     },
 
+    replace: function(from, to, message)
+    {
+        var last = topic.list[topic.list.length - 1];
+        var sections = topic.parse(last.message);
+
+        message = message.split(" ");
+        var section = parseInt(message.shift());
+
+        // Does the requested section even exist?
+        if(typeof sections[section] == "undefined")
+        {
+            // If not, replace the first section
+            section = 0;
+        }
+
+        // Rebuild and sanitize the user message
+        message = message.join(" ");
+        message = message.replace(/\[\]/g, "");
+        
+        sections[section] = message;
+
+        // Set the new topic
+        topic.client.send('TOPIC', '#wetfish', topic.build(sections));
+    },
+
     set: function(from, to, message)
     {
         
@@ -123,11 +176,6 @@ var topic =
     },
 
     prepend: function(from, to, message)
-    {
-        
-    },
-
-    replace: function(from, to, message)
     {
         
     },
