@@ -86,19 +86,14 @@ var topic =
 
     log: function(from, to, message)
     {
-        console.log("---------", from, to, "---------")
-        console.log(topic.list);
+        var most_recent = topic.list.slice(-3);
 
-        for(var i = topic.list.length - 1, l = i - 10; i > l; i--)
+        for(var i = 0, l = most_recent.length; i < l; i++)
         {
-            var recent = topic.list[i];
-            console.log(i, recent);
-
-            if(typeof recent == "undefined")
-                break;
-
- //           recent.user = recent.set_by.split('!')[0];
- //           topic.client.say(from, "User "+recent.user+" set topic in "+recent.channel+"to "+recent.message);
+            var recent = most_recent[i];
+            
+            recent.user = recent.set_by.split('!')[0];
+            topic.client.say(from, recent.user+" set "+recent.channel+"'s topic to "+recent.message);
         }
     },
 
