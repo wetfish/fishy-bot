@@ -72,6 +72,15 @@ var topic =
 
     change: function(channel, message, set_by)
     {
+        if(topic.list.length)
+        {
+            var last = topic.list[topic.list.length - 1];
+
+            // Don't push duplicate topics to the list
+            if(channel == last.channel && message == last.message && set_by  == last.set_by)
+                return;
+        }
+
         topic.list.push({date: new Date(), channel: channel, message: message, set_by: set_by});
     },
 
