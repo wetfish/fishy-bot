@@ -172,7 +172,7 @@ var topic =
 
         // Rebuild and sanitize the user message
         message = message.join(" ");
-        message = message.replace(/\[\]/g, "");
+        message = message.replace(/[\[\]]/g, "");
         
         sections[section] = message;
 
