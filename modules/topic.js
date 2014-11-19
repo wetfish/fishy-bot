@@ -121,7 +121,15 @@ var topic =
 
     log: function(from, to, message)
     {
-        var most_recent = topic.list.slice(-3);
+        var count = parseInt(message);
+
+        // Allow users to specify how many topics they want to see (maximum 20), defaulting to -3
+        if(count < 1 || count > 20)
+            count = -3;
+        else
+            count *= -1;
+        
+        var most_recent = topic.list.slice(count);
 
         for(var i = 0, l = most_recent.length; i < l; i++)
         {
