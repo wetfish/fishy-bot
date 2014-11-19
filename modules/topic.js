@@ -1,3 +1,5 @@
+var fs = require('fs');
+
 var topic =
 {
     // This is a list of topics
@@ -6,6 +8,30 @@ var topic =
     client: false,
     core: false,
     
+    load_log: function(callback)
+    {
+        try
+        {
+            var data = fs.readFileSync('logs/topic.log', 'utf8');
+            topic.list = JSON.parse(data);
+        }
+        catch(error)
+        {
+            console.log("/!\\ Error Reading Logfile /!\\", error);
+        }
+    },
+
+    save_log: function()
+    {
+        try
+        {
+            fs.writeFileSync('logs/topic.log', JSON.stringify(topic.list));
+        }
+        catch(error)
+        {
+            console.log("/!\\ Error Saving Logfile /!\\", error);
+        }
+    },
 
     // This really should be a core function or something
     reply: function(type, from, to, message)
@@ -46,13 +72,25 @@ var topic =
 
     change: function(channel, message, set_by)
     {
-        topic.list.push({channel: channel, message: message, set_by: set_by});
+        topic.list.push({date: new Date(), channel: channel, message: message, set_by: set_by});
     },
 
     log: function(from, to, message)
     {
         console.log("---------", from, to, "---------")
         console.log(topic.list);
+
+        for(var i = topic.list.length - 1, l = i - 10; i > l; i--)
+        {
+            var recent = topic.list[i];
+            console.log(i, recent);
+
+            if(typeof recent == "undefined")
+                break;
+
+ //           recent.user = recent.set_by.split('!')[0];
+ //           topic.client.say(from, "User "+recent.user+" set topic in "+recent.channel+"to "+recent.message);
+        }
     },
 
     restore: function(from, to, message)
@@ -97,6 +135,9 @@ module.exports =
 {
     load: function(client, core)
     {
+        // Read topic list from saved file
+        topic.load_log();
+
         topic.client = client;
         topic.core = core;
         topic.bind();
@@ -104,6 +145,9 @@ module.exports =
 
     unload: function()
     {
+        // Save topic list into file
+        topic.save_log();
+
         topic.unbind();
         delete topic;
     },
