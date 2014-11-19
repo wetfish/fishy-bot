@@ -91,15 +91,25 @@ var topic =
         for(var i = 0, l = most_recent.length; i < l; i++)
         {
             var recent = most_recent[i];
+            var index = topic.list.indexOf(recent);
             
             recent.user = recent.set_by.split('!')[0];
-            topic.client.say(from, recent.user+" set "+recent.channel+"'s topic to "+recent.message);
+            topic.client.say(from, recent.user+" set "+recent.channel+"'s topic to "+recent.message+"\u000f [#"+index+"]");
         }
     },
 
     restore: function(from, to, message)
     {
-        
+        var index = parseInt(message);
+
+        // If an invalid topic ID is passed (or no topic ID at all)
+        if(typeof topic.list[index] == "undefined")
+        {
+            // Use most recent topic before the current
+            index = topic.list.length - 2;
+        }
+
+        topic.client.send('TOPIC', '#wetfish', topic.list[index].message);
     },
 
     set: function(from, to, message)
