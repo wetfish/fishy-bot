@@ -7,6 +7,9 @@ var topic =
     actions: ['log', 'restore', 'replace', 'set', 'append', 'prepend'],
     client: false,
     core: false,
+
+    // A list of people (or other bots) to ignore from making topic changes
+    ignore: ['denice', 'wintermute', 'fiolina'],
     
     load_log: function(callback)
     {
@@ -80,6 +83,10 @@ var topic =
 
     message: function(from, to, message, details)
     {
+        // Don't process messages from ignored users
+        if(topic.ignore.indexOf(from.toLowerCase()) != -1)
+            return;
+        
         // Fishy's commands are prefixed with :
         if(message.charAt(0) == ":")
         {
