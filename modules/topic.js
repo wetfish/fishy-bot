@@ -58,7 +58,7 @@ var topic =
         
         for(var i = 0, l = sections.length; i < l; i++)
         {
-            output.push('[ ' + sections[i] + ' ]');
+            output.push('[ ' + sections[i] + '\u000f ]');
         }
 
         return output.join(' ');
@@ -124,7 +124,7 @@ var topic =
         var count = parseInt(message);
 
         // Allow users to specify how many topics they want to see (maximum 20), defaulting to -3
-        if(count < 1 || count > 20)
+        if(!count || count < 1 || count > 20)
             count = -3;
         else
             count *= -1;
