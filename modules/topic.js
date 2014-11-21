@@ -4,7 +4,7 @@ var topic =
 {
     // This is a list of topics
     list: [],
-    actions: ['log', 'restore', 'replace', 'set', 'delete', 'append', 'prepend', 'splice'],
+    actions: ['log', 'restore', 'replace', 'set', 'append', 'prepend', 'insert', 'delete'],
     client: false,
     core: false,
 
@@ -206,6 +206,66 @@ var topic =
         topic.client.send('TOPIC', '#wetfish', topic.build(sections));
     },
 
+
+    append: function(from, to, message)
+    {
+        var last = topic.list[topic.list.length - 1];
+        var sections = topic.parse(last.message);
+
+        var delimiter = "|";
+        message = message.split(" ");
+
+        // Nothing to do
+        if(!message.length)
+            return;
+
+        // If a custom delimiter is set
+        if(message[0].length == 1)
+        {
+            // Shift it off the array
+            delimiter = message.shift();
+        }
+
+        message = message.join(" ");
+        sections = sections.concat(message.split(delimiter));
+        
+        topic.client.send('TOPIC', '#wetfish', topic.build(sections));
+    },
+
+    prepend: function(from, to, message)
+    {
+        var last = topic.list[topic.list.length - 1];
+        var sections = topic.parse(last.message);
+        var channel = sections.shift();
+
+        var delimiter = "|";
+        message = message.split(" ");
+
+        // Nothing to do
+        if(!message.length)
+            return;
+
+        // If a custom delimiter is set
+        if(message[0].length == 1)
+        {
+            // Shift it off the array
+            delimiter = message.shift();
+        }
+
+        message = message.join(" ");
+        sections = message.split(delimiter).concat(sections);
+
+        // Restore the first topic section
+        sections.unshift(channel);
+        
+        topic.client.send('TOPIC', '#wetfish', topic.build(sections));
+    },
+
+    insert: function(from, to, message)
+    {
+        
+    },
+
     delete: function(from, to, message)
     {
         message = message.split(" ");
@@ -225,21 +285,6 @@ var topic =
 
         sections.splice(index, length);
         topic.client.send('TOPIC', '#wetfish', topic.build(sections));
-    },
-
-    append: function(from, to, message)
-    {
-        
-    },
-
-    prepend: function(from, to, message)
-    {
-        
-    },
-
-    splice: function(from, to, message)
-    {
-
     },
 
     bind: function()
