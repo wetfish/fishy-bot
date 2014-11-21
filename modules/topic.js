@@ -263,7 +263,34 @@ var topic =
 
     insert: function(from, to, message)
     {
-        
+        var last = topic.list[topic.list.length - 1];
+        var sections = topic.parse(last.message);
+
+        var delimiter = "|";
+        message = message.split(" ");
+
+        // Nothing to do
+        if(!message.length)
+            return;
+
+        var index = parseInt(message.shift());
+
+        // Can't insert somewhere that doesn't exist
+        if(!index || index < 1 || index + 1 > sections.length)
+            return;
+
+        // If a custom delimiter is set
+        if(message[0].length == 1)
+        {
+            // Shift it off the array
+            delimiter = message.shift();
+        }
+
+        message = message.join(" ");
+
+        // Wow javascript
+        Array.prototype.splice.apply(sections, [index, 0].concat(message.split(delimiter)));
+        topic.client.send('TOPIC', '#wetfish', topic.build(sections));
     },
 
     delete: function(from, to, message)
