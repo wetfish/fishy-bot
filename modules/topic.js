@@ -4,7 +4,7 @@ var topic =
 {
     // This is a list of topics
     list: [],
-    actions: ['log', 'restore', 'replace', 'set', 'append', 'prepend'],
+    actions: ['log', 'restore', 'replace', 'set', 'append', 'prepend', 'splice'],
     client: false,
     core: false,
 
@@ -192,6 +192,11 @@ var topic =
     prepend: function(from, to, message)
     {
         
+    },
+
+    splice: function(from, to, message)
+    {
+
     },
 
     bind: function()
