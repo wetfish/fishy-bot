@@ -58,7 +58,8 @@ var topic =
         
         for(var i = 0, l = sections.length; i < l; i++)
         {
-            output.push('[ ' + sections[i] + '\u000f ]');
+            var section = sections[i].replace(/[\[\]]/g, "");
+            output.push('[ ' + section + '\u000f ]');
         }
 
         return output.join(' ');
@@ -170,10 +171,8 @@ var topic =
             section = 0;
         }
 
-        // Rebuild and sanitize the user message
-        message = message.join(" ");
-        message = message.replace(/[\[\]]/g, "");
-        
+        // Rebuild the user message
+        message = message.join(" ");        
         sections[section] = message;
 
         // Set the new topic
