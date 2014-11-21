@@ -4,7 +4,7 @@ var topic =
 {
     // This is a list of topics
     list: [],
-    actions: ['log', 'restore', 'replace', 'set', 'append', 'prepend', 'splice'],
+    actions: ['log', 'restore', 'replace', 'set', 'delete', 'append', 'prepend', 'splice'],
     client: false,
     core: false,
 
@@ -60,9 +60,11 @@ var topic =
         {
             // Remove brackets and extra whitespace from new sections
             var section = sections[i].replace(/[\[\]]/g, "");
-            section = section.trim(0);
-            
-            output.push('[ ' + section + '\u000f ]');
+            section = section.trim();
+
+            // Make sure there's still something left
+            if(section.length)
+                output.push('[ ' + section + '\u000f ]');
         }
 
         return output.join(' ');
@@ -170,8 +172,8 @@ var topic =
         // Does the requested section even exist?
         if(typeof sections[section] == "undefined")
         {
-            // If not, replace the first section
-            section = 0;
+            // If not, create a new section
+            section = sections.length;
         }
 
         // Rebuild the user message
@@ -201,6 +203,27 @@ var topic =
         message = message.join(" ");
         sections = message.split(delimiter);
         
+        topic.client.send('TOPIC', '#wetfish', topic.build(sections));
+    },
+
+    delete: function(from, to, message)
+    {
+        message = message.split(" ");
+
+        var last = topic.list[topic.list.length - 1];
+        var sections = topic.parse(last.message);
+
+        var index = parseInt(message[0]);
+        var length = parseInt(message[1]);
+
+        // Can't delete something that doesn't exist
+        if(!index || index < 1 || index + 1 > sections.length)
+            return;
+
+        if(!length || length < 1)
+            length = 1;
+
+        sections.splice(index, length);
         topic.client.send('TOPIC', '#wetfish', topic.build(sections));
     },
 
