@@ -58,7 +58,10 @@ var topic =
         
         for(var i = 0, l = sections.length; i < l; i++)
         {
+            // Remove brackets and extra whitespace from new sections
             var section = sections[i].replace(/[\[\]]/g, "");
+            section = section.trim(0);
+            
             output.push('[ ' + section + '\u000f ]');
         }
 
