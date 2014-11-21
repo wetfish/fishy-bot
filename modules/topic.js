@@ -181,7 +181,24 @@ var topic =
 
     set: function(from, to, message)
     {
+        var delimiter = "|";
+        message = message.split(" ");
+
+        // Nothing to do
+        if(!message.length)
+            return;
+
+        // If a custom delimiter is set
+        if(message[0].length == 1)
+        {
+            // Shift it off the array
+            delimiter = message.shift();
+        }
+
+        message = message.join(" ");
+        sections = message.split(delimiter);
         
+        topic.client.send('TOPIC', '#wetfish', topic.build(sections));
     },
 
     append: function(from, to, message)
