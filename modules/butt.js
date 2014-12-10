@@ -25,7 +25,11 @@ var butt =
                 var caps = new Buffer(crypto.randomBytes(1)).readUInt8(0);
                 var choice = new Buffer(crypto.randomBytes(1)).readUInt8(0) % butt.stuff.length;
                 choice = butt.stuff[choice];
-
+                while (choice == "a" || choice == "the" || choice == "an")
+                {
+                    var choice = new Buffer(crypto.randomBytes(1)).readUInt8(0) % butt.stuff.length;
+                    choice = butt.stuff[choice];
+                }
                 if(plural % 2)
                     choice += "s";
 
@@ -53,7 +57,7 @@ var butt =
         if(chance > 249)
         {
             message = butt.generate(message);
-
+            
             // If this is a channel message
             if(to.charAt(0) == '#')
             {
