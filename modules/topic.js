@@ -9,7 +9,7 @@ var topic =
     core: false,
 
     // A list of people (or other bots) to ignore from making topic changes
-    ignore: ['denice', 'wintermute', 'fiolina'],
+    ignore: ['denice', 'fiolina'],
     
     load_log: function(callback)
     {
@@ -45,7 +45,7 @@ var topic =
 
         while(match = pattern.exec(text))
         {
-            sections.push(match[1].trim());
+            sections.push(match[1].replace(/^[\s\u000f]+|[\s\u000f]+$/g,''));
         }
         
         return sections;
@@ -141,7 +141,7 @@ var topic =
         {
             var recent = most_recent[i];
             var index = topic.list.indexOf(recent);
-            
+
             recent.user = recent.set_by.split('!')[0];
             topic.client.say(from, recent.user+" set "+recent.channel+"'s topic to "+recent.message+"\u000f [#"+index+"]");
         }
