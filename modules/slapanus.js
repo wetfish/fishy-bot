@@ -80,6 +80,8 @@ var anus =
             if(user != "fishy")
                 anus.users.push(user);
         }
+
+        console.log(anus.users);
     },
 
     waiting: function(timeout)
@@ -129,6 +131,9 @@ var anus =
         }
         
         var index = crypto.randomBytes(1).readUInt8(0) % anus.users.length;
+
+console.log(index, anus.users[index]);
+        
         return anus.users[index];
     },
 
@@ -234,7 +239,7 @@ var anus =
 
         if(timeout)
         {
-            anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
+            anus.reply('say', from, from, "Can't suck, won't suck. ("+timeout+" seconds remaining)");
             return;
         }
 
@@ -288,7 +293,7 @@ var anus =
         setTimeout(function() { anus.reply('say', from, to, "This nigga fishy GETS BUCK!"); }, 3000);
         setTimeout(function() { anus.reply('say', from, to, "What it do ...? "); }, 6000);
         setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
-        setTimeout(function() { anus.reply('action', from, to, "slaps 1SUPER SLAPS "+target+"'s BLACK ANUS!"); }, 10000);
+        setTimeout(function() { anus.reply('action', from, to, " 1SUPER SLAPS "+target+"'s BLACK ANUS!"); }, 10000);
         setTimeout(function() { anus.client.send('KICK', to, target, "1THISNIGGASDOWNTHISNIGGASDOWNTHISNIGGASDOWNTHISNIGGASDOWNTHISNIGGASDOWNTHISNIGGASDOWN"); }, 20000);
     },
 
