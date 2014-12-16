@@ -123,7 +123,6 @@ var topic =
                 return;
         }
 
-
         var new_topic = {date: new Date(), channel: channel, message: message, set_by: set_by};
 
         if(set_by == 'fishy' && topic.user)
@@ -152,7 +151,11 @@ var topic =
             var recent = most_recent[i];
             var index = topic.list.indexOf(recent);
 
-            recent.user = recent.set_by.split('!')[0];
+            if(typeof recent.requested_by != "undefined")
+                recent.user = recent.requested_by;
+            else
+                recent.user = recent.set_by.split('!')[0];
+                
             topic.client.say(from, recent.user+" set "+recent.channel+"'s topic to "+recent.message+"\u000f [#"+index+"]");
         }
     },
