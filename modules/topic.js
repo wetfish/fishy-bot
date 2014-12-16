@@ -7,6 +7,7 @@ var topic =
     actions: ['log', 'restore', 'replace', 'set', 'append', 'prepend', 'insert', 'delete'],
     client: false,
     core: false,
+    user: false,
 
     // A list of people (or other bots) to ignore from making topic changes
     ignore: ['denice', 'fiolina'],
@@ -122,7 +123,16 @@ var topic =
                 return;
         }
 
-        topic.list.push({date: new Date(), channel: channel, message: message, set_by: set_by});
+
+        var new_topic = {date: new Date(), channel: channel, message: message, set_by: set_by};
+
+        if(set_by == 'fishy' && topic.user)
+        {
+            new_topic.requested_by = topic.user;
+            topic.user = false;
+        }
+        
+        topic.list.push(new_topic);
     },
 
     log: function(from, to, message)
@@ -158,6 +168,7 @@ var topic =
             index = topic.list.length - 2;
         }
 
+        topic.user = from;
         topic.client.send('TOPIC', '#wetfish', topic.list[index].message);
     },
 
@@ -181,6 +192,7 @@ var topic =
         sections[section] = message;
 
         // Set the new topic
+        topic.user = from;
         topic.client.send('TOPIC', '#wetfish', topic.build(sections));
     },
 
@@ -203,6 +215,7 @@ var topic =
         message = message.join(" ");
         sections = message.split(delimiter);
         
+        topic.user = from;
         topic.client.send('TOPIC', '#wetfish', topic.build(sections));
     },
 
@@ -229,6 +242,7 @@ var topic =
         message = message.join(" ");
         sections = sections.concat(message.split(delimiter));
         
+        topic.user = from;
         topic.client.send('TOPIC', '#wetfish', topic.build(sections));
     },
 
@@ -258,6 +272,7 @@ var topic =
         // Restore the first topic section
         sections.unshift(channel);
         
+        topic.user = from;
         topic.client.send('TOPIC', '#wetfish', topic.build(sections));
     },
 
@@ -290,6 +305,8 @@ var topic =
 
         // Wow javascript
         Array.prototype.splice.apply(sections, [index, 0].concat(message.split(delimiter)));
+
+        topic.user = from;
         topic.client.send('TOPIC', '#wetfish', topic.build(sections));
     },
 
@@ -311,6 +328,8 @@ var topic =
             length = 1;
 
         sections.splice(index, length);
+
+        topic.user = from;
         topic.client.send('TOPIC', '#wetfish', topic.build(sections));
     },
 
