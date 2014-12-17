@@ -209,7 +209,7 @@ var topic =
             return;
 
         // If a custom delimiter is set
-        if(message[0].length == 1)
+        if(message[0].length == 1 && message[0].match(/[^a-z0-9]/i))
         {
             // Shift it off the array
             delimiter = message.shift();
@@ -236,7 +236,7 @@ var topic =
             return;
 
         // If a custom delimiter is set
-        if(message[0].length == 1)
+        if(message[0].length == 1 && message[0].match(/[^a-z0-9]/i))
         {
             // Shift it off the array
             delimiter = message.shift();
@@ -263,7 +263,7 @@ var topic =
             return;
 
         // If a custom delimiter is set
-        if(message[0].length == 1)
+        if(message[0].length == 1 && message[0].match(/[^a-z0-9]/i))
         {
             // Shift it off the array
             delimiter = message.shift();
@@ -298,7 +298,7 @@ var topic =
             return;
 
         // If a custom delimiter is set
-        if(message[0].length == 1)
+        if(message[0].length == 1 && message[0].match(/[^a-z0-9]/i))
         {
             // Shift it off the array
             delimiter = message.shift();
