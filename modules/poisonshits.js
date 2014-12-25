@@ -27,6 +27,14 @@ var shit =
     users: [],
     wait: false,
     timeout: false,
+
+    parse: function(input)
+    {
+        if(typeof input != "string")
+            input = "";
+            
+        return input.split(" ");
+    },
     
     // Accept commands from shit input!
     // Based on user/hostname
@@ -145,12 +153,12 @@ var shit =
             return;
         }
 
-        message = message.split(' ');
-        var request = message[0];
+        var request = shit.parse(message);
 
-        if(message[0].trim() == "")
+        if(request[0].trim() == "")
             request = shit.random_target(from, message);
-
+        else
+            request = request[0].trim();
         
         // Pick a random target
         var target = shit.random_target(from, message);
@@ -167,10 +175,10 @@ var shit =
             shit.reply('say', from, to, "fishy murmurs a ritual...");
         }, 1000);
 
-        setTimeout(function() { shit.reply('say', from, to, "fishy spits onto the floor!"); }, 3000);
-        setTimeout(function() { shit.reply('say', from, to, "The saliva reads..."); }, 6000);
+        setTimeout(function() { shit.reply('say', from, to, request+"'s and "+target+"'s names materialize out of turds"); }, 3000);
+        setTimeout(function() { shit.reply('say', from, to, "... "+target+"!"); }, 6000);
         setTimeout(function() { shit.reply('say', from, to, target+"!"); }, 8000);
-        setTimeout(function() { shit.reply('action', from, to, "slaps "+target+"'s shit!"); }, 10000);
+        setTimeout(function() { shit.client.send('KICK', to, target, "POISONSHITSPOISONSHITSPOISONSHITSPOISONSHITSPOISONSHITSPOISONSHITS"); }, 12000);
     },
 
     superpoisonshits: function(from, to, message)

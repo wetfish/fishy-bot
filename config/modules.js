@@ -1,1 +1,1 @@
-module.exports = ['prompt', 'output', 'admin', 'butt', 'github', 'slapanus', 'topic'];
+module.exports = ['prompt', 'output', 'admin', 'butt', 'github', 'slapanus', 'topic', 'poisonshits'];
