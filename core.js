@@ -5,9 +5,13 @@ module.exports = (function()
 {
     var core =
     {
+        // Define core variables
         client: false,
         secrets: false,
         loaded: {},
+
+        // Get core functions
+        functions: require("./config/core.js"),
 
         init: function(client, modules, secrets)
         {
@@ -17,18 +21,32 @@ module.exports = (function()
             if(!core.client)
                 core.client = client;
 
-            for(var i = 0, l = modules.length; i < l; i++)
+            // Add requested modules to the core functions list
+            core.functions = core.functions.concat(modules);
+
+            for(var i = 0, l = core.functions.length; i < l; i++)
             {
-                core.load(modules[i]);
+                core.load(core.functions[i]);
             }
         },
 
         load: function(module)
         {
+            var path = false;
+
             // Make sure the module exists!
-            if(fs.existsSync("./modules/"+module+".js"))
+            if(fs.existsSync("./core/"+module+".js"))
             {
-                core.loaded[module] = require("./modules/"+module+".js");
+                path = "./core/"+module+".js";
+            }
+            else if(fs.existsSync("./modules/"+module+".js"))
+            {
+                path = "./modules/"+module+".js";
+            }
+                
+            if(path)
+            {
+                core.loaded[module] = require(path);
 
                 // Make sure the loaded module has a load function
                 if(typeof core.loaded[module].load == "function")
@@ -62,6 +80,7 @@ module.exports = (function()
                 }
                 
                 delete core.loaded[module];
+                delete require.cache[require.resolve("./core/"+module+".js")];
                 delete require.cache[require.resolve("./modules/"+module+".js")];
             }
         },

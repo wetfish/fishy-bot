@@ -177,8 +177,7 @@ var shit =
 
         setTimeout(function() { shit.reply('say', from, to, request+"'s and "+target+"'s names materialize out of turds"); }, 3000);
         setTimeout(function() { shit.reply('say', from, to, "... "+target+"!"); }, 6000);
-        setTimeout(function() { shit.reply('say', from, to, target+"!"); }, 8000);
-        setTimeout(function() { shit.client.send('KICK', to, target, "POISONSHITSPOISONSHITSPOISONSHITSPOISONSHITSPOISONSHITSPOISONSHITS"); }, 12000);
+        setTimeout(function() { shit.client.send('KICK', to, target, "POISONSHITSPOISONSHITSPOISONSHITSPOISONSHITSPOISONSHITSPOISONSHITS"); }, 8000);
     },
 
     superpoisonshits: function(from, to, message)
