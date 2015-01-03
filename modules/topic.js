@@ -181,7 +181,7 @@ var topic =
         var sections = topic.parse(last.message);
 
         message = message.split(" ");
-        var section = parseInt(message.shift());
+        var section = parseInt(message.shift()) - 1;
 
         // Does the requested section even exist?
         if(typeof sections[section] == "undefined")
@@ -291,7 +291,7 @@ var topic =
         if(!message.length)
             return;
 
-        var index = parseInt(message.shift());
+        var index = parseInt(message.shift()) - 1;
 
         // Can't insert somewhere that doesn't exist
         if(!index || index < 1 || index + 1 > sections.length)
@@ -320,7 +320,7 @@ var topic =
         var last = topic.list[topic.list.length - 1];
         var sections = topic.parse(last.message);
 
-        var index = parseInt(message[0]);
+        var index = parseInt(message[0]) - 1;
         var length = parseInt(message[1]);
 
         // Can't delete something that doesn't exist
