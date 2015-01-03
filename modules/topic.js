@@ -138,8 +138,8 @@ var topic =
     {
         var count = parseInt(message);
 
-        // Allow users to specify how many topics they want to see (maximum 20), defaulting to -3
-        if(!count || count < 1 || count > 20)
+        // Allow users to specify how many topics they want to see (maximum 50), defaulting to -3
+        if(!count || count < 1 || count > 50)
             count = -3;
         else
             count *= -1;
