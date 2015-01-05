@@ -15,9 +15,9 @@ var ross =
 
     message: function(from, to, message, details)
     {
-        if(from == "denice" && to == "#wetfish" && message == "Now hating ross")
+        if(from == "denice" && to == "#wetfish" && (message == "Now hating ross" || message == ">echo !rainbow Rossthefox: NOBODY CARES"))
         {
-            ross.client.say(to, "!hateross");
+            ross.client.say("denice", "!hateross");
         }
     },
 
