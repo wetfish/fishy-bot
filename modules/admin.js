@@ -53,6 +53,19 @@ var admin =
         }
     },
 
+    // This function determines module type based on user input
+    parse_module: function(module)
+    {
+        module = module.split(' ');
+
+        if(module[0] == 'core')
+            return {type: 'core', name: module[1]};
+        else if(module[1] == 'module')
+            return {type: 'modules', name: module[1]};
+        else
+            return {type: 'modules', name: module[0]};
+    },
+
     say: function(from, to, message)
     {
         admin.reply('say', from, to, message);
@@ -60,19 +73,22 @@ var admin =
 
     load: function(from, to, module)
     {
-        admin.reply('say', from, to, 'Loading ' + module + ' module...');
+        module = admin.parse_module(module);
+        admin.reply('say', from, to, 'Loading ' + module.name + ' module...');
         admin.core.load(module);
     },
 
     unload: function(from, to, module)
     {
-        admin.reply('say', from, to, 'Unloading ' + module + ' module...');
+        module = admin.parse_module(module);
+        admin.reply('say', from, to, 'Unloading ' + module.name + ' module...');
         admin.core.unload(module);
     },
 
     reload: function(from, to, module)
     {
-        admin.reply('say', from, to, 'Reloading ' + module + ' module...');
+        module = admin.parse_module(module);
+        admin.reply('say', from, to, 'Reloading ' + module.name + ' module...');
         admin.core.reload(module);
     },
 
