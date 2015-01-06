@@ -5,8 +5,11 @@ var prompt =
     readline: false,
     client: false,
     core: false,
+
+    // List of valid actions
     list: ['say', 'load', 'unload', 'reload'],
-    
+
+    // Handler for user input
     handle: function(line)
     {
         var line = line.split(' ');
@@ -15,7 +18,7 @@ var prompt =
 
         if(action && command)
         {
-            // If this is a valid prompt
+            // If this is a valid action
             if(prompt.list.indexOf(action) > -1)
             {
                 prompt[action](command);
@@ -31,29 +34,50 @@ var prompt =
         }
     },
 
+    // This function determines module type based on user input
+    parse_module: function(module)
+    {
+        module = module.split(' ');
+
+        if(module[0] == 'core')
+            return {type: 'core', name: module[1]};
+        else if(module[1] == 'module')
+            return {type: 'modules', name: module[1]};
+        else
+            return {type: 'modules', name: module[0]};
+    },
+
+    // Send a message to wetfish
     say: function(message)
     {
         prompt.client.say('#wetfish', message);
     },
 
+    // Load a module
     load: function(module)
     {
+        module = prompt.parse_module(module);
         prompt.core.load(module);
     },
 
+    // Unload a module
     unload: function(module)
     {
+        module = prompt.parse_module(module);
         prompt.core.unload(module);
     },
 
+    // Reload a module
     reload: function(module)
     {
+        module = prompt.parse_module(module);
         prompt.core.reload(module);
     }
 };
 
 module.exports =
 {
+    // This function is called when this module is loaded
     load: function(client, core)
     {
         prompt.client = client;
@@ -69,10 +93,13 @@ module.exports =
         });
     },
 
+    // This function is called when this module is unloaded
     unload: function()
     {
+        // Stop requesting input
         prompt.readline.close();
-        
+
+        // Clean up variables
         delete readline;
         delete prompt;
     }
