@@ -28,10 +28,16 @@ module.exports = (function()
                 core.modules.push({type: 'core', name: core_modules[i]});
             }
 
-            // Now loop through all non-essential modules
+            // Loop through all non-essential modules
             for(var i = 0, l = modules.length; i < l; i++)
             {
                 core.modules.push({type: 'modules', name: modules[i]});
+            }
+
+            // Now loop through all modules and load them
+            for(var i = 0, l = core.modules.length; i < l; i++)
+            {
+                core.load(core.modules[i]);
             }
         },
 
