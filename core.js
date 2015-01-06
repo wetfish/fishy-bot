@@ -9,9 +9,7 @@ module.exports = (function()
         client: false,
         secrets: false,
         loaded: {},
-
-        // Get core functions
-        functions: require("./config/core.js"),
+        modules: [],
 
         init: function(client, modules, secrets)
         {
@@ -21,12 +19,19 @@ module.exports = (function()
             if(!core.client)
                 core.client = client;
 
-            // Add requested modules to the core functions list
-            core.functions = core.functions.concat(modules);
+            // Get core modules
+            var modules = require("./config/core.js");
 
-            for(var i = 0, l = core.functions.length; i < l; i++)
+            // Loop through existing core modules
+            for(var i = 0, l = modules.length; i < l; i++)
             {
-                core.load(core.functions[i]);
+                core.modules.push({type: 'core', name: modules[i]});
+            }            
+
+            // Now loop through all non-essential modules
+            for(var i = 0, l = modules.length; i < l; i++)
+            {
+                core.modules.push({type: 'modules', name: modules[i]});
             }
         },
 
