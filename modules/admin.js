@@ -2,7 +2,7 @@ var admin =
 {
     // This is a list of admins
     list: ['rachel@unicorn.sparkle.princess', 'svchost@madmin.madtown'],
-    commands: ['say', 'load', 'unload', 'reload'],
+    commands: ['say', 'load', 'unload', 'reload', 'quit'],
     client: false,
     core: false,
     
@@ -90,6 +90,12 @@ var admin =
         module = admin.parse_module(module);
         admin.reply('say', from, to, 'Reloading ' + module.name + ' module...');
         admin.core.reload(module);
+    },
+
+    quit: function(from, to, module)
+    {
+        admin.reply('say', from, to, 'Bye bye!');
+        require('process').exit();
     },
 
     bind: function()
