@@ -20,13 +20,13 @@ module.exports = (function()
                 core.client = client;
 
             // Get core modules
-            var modules = require("./config/core.js");
+            var core_modules = require("./config/core.js");
 
-            // Loop through existing core modules
-            for(var i = 0, l = modules.length; i < l; i++)
+            // Loop through core modules
+            for(var i = 0, l = core_modules.length; i < l; i++)
             {
-                core.modules.push({type: 'core', name: modules[i]});
-            }            
+                core.modules.push({type: 'core', name: core_modules[i]});
+            }
 
             // Now loop through all non-essential modules
             for(var i = 0, l = modules.length; i < l; i++)
@@ -37,56 +37,52 @@ module.exports = (function()
 
         load: function(module)
         {
-            var path = false;
-
+            var path = "./"+module.type+"/"+module.name+".js";
+            
             // Make sure the module exists!
-            if(fs.existsSync("./core/"+module+".js"))
+            if(fs.existsSync(path))
             {
-                path = "./core/"+module+".js";
-            }
-            else if(fs.existsSync("./modules/"+module+".js"))
-            {
-                path = "./modules/"+module+".js";
-            }
-                
-            if(path)
-            {
-                core.loaded[module] = require(path);
+                // Create a unique ID for the module based on it's type and name
+                var module_id = module.type + "/" + module.name;
 
-                // Make sure the loaded module has a load function
-                if(typeof core.loaded[module].load == "function")
+                // Now require the module
+                core.loaded[module_id] = require(path);
+
+                // And check if it has a load function
+                if(typeof core.loaded[module_id].load == "function")
                 {
-                    core.loaded[module].load(core.client, core);
+                    core.loaded[module_id].load(core.client, core);
                 }
                 else
                 {
-                    console.log("Warning: Module '"+module+"' cannot be loaded!");
+                    console.log("Warning: Module '"+module.name+"' cannot be loaded!");
                 }
             }
             else
             {
-                console.log("Warning: Module '"+module+"' does not exist!");
+                console.log("Warning: Module '"+module.name+"' does not exist!");
             }
         },
 
         unload: function(module)
         {
+            var module_id = module.type + "/" + module.name;
+
             // Make sure this module is actually loaded
-            if(typeof core.loaded[module] != "undefined")
+            if(typeof core.loaded[module_id] != "undefined")
             {
-                // Make sure the loaded module has a load function
-                if(typeof core.loaded[module].unload == "function")
+                // Does this module have an unload function?
+                if(typeof core.loaded[module_id].unload == "function")
                 {
-                    core.loaded[module].unload();
+                    core.loaded[module_id].unload();
                 }
                 else
                 {
-                    console.log("Warning: Module '"+module+"' cannot be unloaded!");
+                    console.log("Warning: Module '"+module.name+"' cannot be unloaded!");
                 }
                 
                 delete core.loaded[module];
-                delete require.cache[require.resolve("./core/"+module+".js")];
-                delete require.cache[require.resolve("./modules/"+module+".js")];
+                delete require.cache[require.resolve("./"+module.type+"/"+module.name+".js")];
             }
         },
 
