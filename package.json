@@ -25,7 +25,7 @@
     
     "dependencies":
     {
-        "irc": "*",
+        "irc": "0.3.7",
         "github": "*",
         "buffer-equal-constant-time": "*"
     },
