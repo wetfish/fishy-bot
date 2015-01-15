@@ -1,42 +1,38 @@
 // Core module for keeping track of users in channels
 
+// TODO: Request names for each channel we're in when this module is loaded?
+// TODO: Save user data to the core object so other modules can access it
+
+
 var user =
 {
     client: false,
 
     // Events that change who is in the room
-    methods: ['names', 'join', 'part', 'quit', 'kick', 'kill', 'nick'],
+    methods: ['names', 'join', 'part', 'quit', 'kick', 'kill', 'nick', 'message'],
 
     // An object for tracking users in rooms
     list: {},
 
     // Handler when first joining a channel
-    names: function()
+    names: function(channel, users)
     {
-        console.log(arguments);
+        var user_list = [];
+        
+        // Loop through user object to build an array
+        for (var i = 0, keys = Object.keys(users), l = keys.length; i < l; ++i)
+        {
+            var user_data =
+            {
+                name: keys[i],
+                mode: users[keys[i]]
+            };
+            
+            user_list.push(user_data);
+        }
 
-/*
-{ '0': '#wetfish',
-  '1':
-   { nullroute: '',
-     dbladez: '@',
-     dave_mark: '',
-     solo: '@',
-     devnill: '',
-     haitani: '',
-     sunnid: '',
-     lq: '',
-     fishy: '%',
-     rachel: '',
-     svchost: '@',
-     redheron: '',
-     FrobtheBuilder: '@',
-     Fiolina: '%',
-     djerkwell: '+',
-     rachelphone: '' } }
-*/
-
-
+        // Save this list to the channel
+        user.list[channel] = user_list;
     },
 
     // Handlers when users join or leave
@@ -146,6 +142,13 @@ var user =
      args: [ 'rachelfriend' ] } }
 */
 
+    },
+
+    message: function(from, to, message, details)
+    {
+        console.log(arguments);
+        if(message == ':debug users')
+            console.log(user.list);
     },
 
     bind: function()
