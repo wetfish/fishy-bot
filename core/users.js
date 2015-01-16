@@ -2,7 +2,7 @@
 
 // TODO: Request names for each channel we're in when this module is loaded?
 // TODO: Save user data to the core object so other modules can access it
-
+// TODO: Handle user mode changes
 
 var user =
 {
@@ -36,112 +36,58 @@ var user =
     },
 
     // Handlers when users join or leave
-    join: function()
+    join: function(channel, user)
     {
-        console.log(arguments);
+        // Build user data
+        var user_data =
+        {
+            name: user,
+            mode: ''
+        };
 
-/*
-{ '0': '#wetfish',
-  '1': 'rachelphone',
-  '2':
-   { prefix: 'rachelphone!rachel@rachel.test',
-     nick: 'rachelphone',
-     user: 'rachel',
-     host: 'rachel.test',
-     command: 'JOIN',
-     rawCommand: 'JOIN',
-     commandType: 'normal',
-     args: [ '#wetfish' ] } }
-*/
-
+        user.list[channel].push(user_data);
     },
     
-    part: function()
+    part: function(channel, user, message)
     {
-        console.log(arguments);
+        var index = user.list[channel].indexOf(user);
 
-/*
-{ '0': '#wetfish',
-  '1': 'rachelphone',
-  '2': 'so good at testing',
-  '3':
-   { prefix: 'rachelphone!rachel@rachel.test',
-     nick: 'rachelphone',
-     user: 'rachel',
-     host: 'rachel.test',
-     command: 'PART',
-     rawCommand: 'PART',
-     commandType: 'normal',
-     args: [ '#wetfish', 'so good at testing' ] } }
-*/
+        // Hopefully the user exists in the user list...
+        if(index > -1)
+        {
+            user.list[channel].splice(index, 1);
+        }
     },
     
-    quit: function()
+    quit: function(user, message, channels)
     {
-        console.log(arguments);
+        // Loop through all channels this user was seen quitting from
+        for(var i = 0, l = channels.length; i < l; i++)
+        {
+            var channel = channels[i];
+            var index = user.list[channel].indexOf(user);
 
-/*
-{ '0': 'Crionarx',
-  '1': 'A TLS packet with unexpected length was received.',
-  '2': [ '#wetfish' ],
-  '3': 
-   { prefix: 'Crionarx!Owner@Fish-lli6ov.res.rr.com',
-     nick: 'Crionarx',
-     user: 'Owner',
-     host: 'Fish-lli6ov.res.rr.com',
-     command: 'QUIT',
-     rawCommand: 'QUIT',
-     commandType: 'normal',
-     args: [ 'A TLS packet with unexpected length was received.' ] } }
-*/
+            if(index > -1)
+            {
+                user.list[channel].splice(index, 1);
+            }
+        }
     },
     
-    kick: function()
+    kick: function(channel, user, message)
     {
-        console.log(arguments);
+        var index = user.list[channel].indexOf(user);
 
-/*
-{ '0': '#wetfish',
-  '1': 'rachelphone',
-  '2': 'rachel',
-  '3': 'GET OUT',
-  '4':
-   { prefix: 'rachel!rachel@unicorn.sparkle.princess',
-     nick: 'rachel',
-     user: 'rachel',
-     host: 'unicorn.sparkle.princess',
-     command: 'KICK',
-     rawCommand: 'KICK',
-     commandType: 'normal',
-     args: [ '#wetfish', 'rachelphone', 'GET OUT' ] } }
-*/
+        if(index > -1)
+        {
+            user.list[channel].splice(index, 1);
+        }
     },
     
-    kill: function()
-    {
-        console.log(arguments);
-    },
-
     // Handler when a user changes their name
-    nick: function()
+    nick: function(old_name, new_name, channels)
     {
-        console.log(arguments);
-
-/*
-{ '0': 'rachelphone',
-  '1': 'rachelfriend',
-  '2': [ '#wetfish' ],
-  '3':
-   { prefix: 'rachelphone!rachel@rachel.test',
-     nick: 'rachelphone',
-     user: 'rachel',
-     host: 'rachel.test',
-     command: 'NICK',
-     rawCommand: 'NICK',
-     commandType: 'normal',
-     args: [ 'rachelfriend' ] } }
-*/
-
+        
     },
 
     message: function(from, to, message, details)
