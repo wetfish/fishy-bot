@@ -66,6 +66,10 @@ var user =
             mode: ''
         };
         
+        // Make sure this channel exists...
+        if(typeof user.list[channel] == "undefined")
+            user.list[channel] = [];
+
         user.list[channel].push(user_data);
     },
     
