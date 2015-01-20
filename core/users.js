@@ -9,13 +9,13 @@ var user =
     client: false,
 
     // Events that change who is in the room
-    methods: ['names', 'join', 'part', 'quit', 'kick', 'kill', 'nick', 'message'],
+    methods: ['names', 'join', 'part', 'quit', 'kick', 'nick', 'message'],
 
     // An object for tracking users in rooms
     list: {},
 
     // Function to find users in user lists
-    find: function(channel, user)
+    find: function(channel, username)
     {
         var user_list = user.list[channel];
 
@@ -27,7 +27,7 @@ var user =
         for(var i = 0, l = user_list.length; i < l; i++)
         {
             // Match found?
-            if(user_list[i].name == user)
+            if(user_list[i].name == username)
                 return i;
         }
 
@@ -57,21 +57,21 @@ var user =
     },
 
     // Handlers when users join or leave
-    join: function(channel, user)
+    join: function(channel, username)
     {
         // Build user data
         var user_data =
         {
-            name: user,
+            name: username,
             mode: ''
         };
 
         user.list[channel].push(user_data);
     },
     
-    part: function(channel, user, message)
+    part: function(channel, username, message)
     {
-        var index = user.find(channel, user);
+        var index = user.find(channel, username);
         
         // Hopefully the user exists in the user list...
         if(index > -1)
@@ -80,13 +80,13 @@ var user =
         }
     },
     
-    quit: function(user, message, channels)
+    quit: function(username, message, channels)
     {
         // Loop through all channels this user was seen quitting from
         for(var i = 0, l = channels.length; i < l; i++)
         {
             var channel = channels[i];
-            var index = user.find(channel, user);
+            var index = user.find(channel, username);
 
             if(index > -1)
             {
@@ -95,9 +95,9 @@ var user =
         }
     },
     
-    kick: function(channel, user, message)
+    kick: function(channel, username, message)
     {
-        var index = user.find(channel, user);
+        var index = user.find(channel, username);
 
         if(index > -1)
         {
