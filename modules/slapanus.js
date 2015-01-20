@@ -80,8 +80,6 @@ var anus =
             if(user != "fishy")
                 anus.users.push(user);
         }
-
-        console.log(anus.users);
     },
 
     waiting: function(timeout)
@@ -130,15 +128,14 @@ var anus =
             // Else, use the default behavior
         }
         
-        var index = crypto.randomBytes(1).readUInt8(0) % anus.users.length;
-
-console.log(index, anus.users[index]);
-        
+        var index = crypto.randomBytes(1).readUInt8(0) % anus.users.length;        
         return anus.users[index];
     },
 
     slapanus: function(from, to, message)
     {
+        console.log("THIS IS THE THING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", anus.core.users);
+
         var timeout = anus.waiting();
         
         if(timeout)

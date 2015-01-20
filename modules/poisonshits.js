@@ -88,8 +88,6 @@ var shit =
             if(user != "fishy")
                 shit.users.push(user);
         }
-
-        console.log(shit.users);
     },
 
     waiting: function(timeout)

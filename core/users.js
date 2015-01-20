@@ -1,7 +1,6 @@
 // Core module for keeping track of users in channels
 
 // TODO: Request names for each channel we're in when this module is loaded?
-// TODO: Save user data to the core object so other modules can access it
 // TODO: Handle user mode changes
 
 var user =
@@ -128,7 +127,6 @@ var user =
 
     message: function(from, to, message, details)
     {
-        console.log(arguments);
         if(message == ':debug users')
             console.log(user.list);
 
@@ -157,10 +155,13 @@ var user =
 
 module.exports =
 {
-    load: function(client)
+    load: function(client, core)
     {
         user.client = client;
         user.bind();
+
+        // Store the userlist in core so other modules have access to it
+        core.users = user.list;
     },
 
     unload: function()
