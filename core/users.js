@@ -14,6 +14,27 @@ var user =
     // An object for tracking users in rooms
     list: {},
 
+    // Function to find users in user lists
+    find: function(channel, user)
+    {
+        var user_list = user.list[channel];
+
+        // No user list, user not found!
+        if(typeof user_list == undefined || !user_list.length)
+            return -1;
+
+        // Else, loop through users
+        for(var i = 0, l = user_list.length; i < l; i++)
+        {
+            // Match found?
+            if(user_list[i].name == user)
+                return i;
+        }
+
+        // No result found?
+        return -1;
+    },
+
     // Handler when first joining a channel
     names: function(channel, users)
     {
@@ -50,8 +71,8 @@ var user =
     
     part: function(channel, user, message)
     {
-        var index = user.list[channel].indexOf(user);
-
+        var index = user.find(channel, user);
+        
         // Hopefully the user exists in the user list...
         if(index > -1)
         {
@@ -65,7 +86,7 @@ var user =
         for(var i = 0, l = channels.length; i < l; i++)
         {
             var channel = channels[i];
-            var index = user.list[channel].indexOf(user);
+            var index = user.find(channel, user);
 
             if(index > -1)
             {
@@ -76,7 +97,7 @@ var user =
     
     kick: function(channel, user, message)
     {
-        var index = user.list[channel].indexOf(user);
+        var index = user.find(channel, user);
 
         if(index > -1)
         {
