@@ -65,7 +65,7 @@ var user =
             name: username,
             mode: ''
         };
-
+        
         user.list[channel].push(user_data);
     },
     
@@ -108,7 +108,18 @@ var user =
     // Handler when a user changes their name
     nick: function(old_name, new_name, channels)
     {
-        
+        // Loop through all channels this user was seen changing their name in
+        for(var i = 0, l = channels.length; i < l; i++)
+        {
+            var channel = channels[i];
+            var index = user.find(channel, old_name);
+
+            if(index > -1)
+            {
+                // Update saved user name
+                user.list[channel][index].name = new_name;
+            }
+        }
     },
 
     message: function(from, to, message, details)
@@ -116,6 +127,9 @@ var user =
         console.log(arguments);
         if(message == ':debug users')
             console.log(user.list);
+
+        if(message == ':debug names')
+            user.client.send('NAMES', '#wetfish');
     },
 
     bind: function()
@@ -143,9 +157,6 @@ module.exports =
     {
         user.client = client;
         user.bind();
-
-        // Automatically request names on load (for debugging :)
-        user.client.send('NAMES', '#wetfish');
     },
 
     unload: function()
