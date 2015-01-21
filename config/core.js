@@ -1,1 +1,1 @@
-module.exports = ['prompt', 'output', 'users'];
+module.exports = ['prompt', 'output'];
