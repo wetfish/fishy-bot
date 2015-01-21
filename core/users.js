@@ -17,9 +17,9 @@ var user =
     find: function(channel, username)
     {
         var user_list = user.list[channel];
-
+        
         // No user list, user not found!
-        if(typeof user_list == undefined || !user_list.length)
+        if(user_list == undefined || !user_list.length)
             return -1;
 
         // Else, loop through users
@@ -160,13 +160,16 @@ module.exports =
         user.client = client;
         user.bind();
 
-        // Store the userlist in core so other modules have access to it
-        core.users = user.list;
+        // Store this module in core so other modules have access to it
+        core.user = user;
     },
 
-    unload: function()
+    unload: function(client, core)
     {
         user.unbind();
         delete user;
+
+        // Delete stored reference
+        delete core.user;
     }
 }

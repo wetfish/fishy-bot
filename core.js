@@ -80,7 +80,7 @@ module.exports = (function()
                 // Does this module have an unload function?
                 if(typeof core.loaded[module_id].unload == "function")
                 {
-                    core.loaded[module_id].unload();
+                    core.loaded[module_id].unload(core.client, core);
                 }
                 else
                 {
