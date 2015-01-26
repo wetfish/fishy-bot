@@ -7,7 +7,7 @@ var prompt =
     core: false,
 
     // List of valid actions
-    list: ['say', 'load', 'unload', 'reload'],
+    list: ['say', 'ctcp', 'load', 'unload', 'reload'],
 
     // Handler for user input
     handle: function(line)
@@ -51,6 +51,16 @@ var prompt =
     say: function(message)
     {
         prompt.client.say('#wetfish', message);
+    },
+
+    // Send a CTCP message
+    ctcp: function(message)
+    {
+        message = message.split(' ');
+        var target = message.shift();
+        message = message.join(' ');
+
+        prompt.client.ctcp(target, message);
     },
 
     // Load a module

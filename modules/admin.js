@@ -2,7 +2,7 @@ var admin =
 {
     // This is a list of admins
     list: ['rachel@unicorn.sparkle.princess', 'svchost@madmin.madtown'],
-    commands: ['say', 'load', 'unload', 'reload', 'quit'],
+    commands: ['say', 'ctcp', 'load', 'unload', 'reload', 'quit'],
     client: false,
     core: false,
     
@@ -69,6 +69,16 @@ var admin =
     say: function(from, to, message)
     {
         admin.reply('say', from, to, message);
+    },
+
+    // Send a CTCP message
+    ctcp: function(message)
+    {
+        message = message.split(' ');
+        var target = message.shift();
+        message = message.join(' ');
+
+        admin.client.ctcp(target, message);
     },
 
     load: function(from, to, module)
