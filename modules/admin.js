@@ -72,13 +72,14 @@ var admin =
     },
 
     // Send a CTCP message
-    ctcp: function(message)
+    ctcp: function(from, to, message)
     {
         message = message.split(' ');
         var target = message.shift();
+        var type = message.shift();
         message = message.join(' ');
 
-        admin.client.ctcp(target, message);
+        admin.client.ctcp(target, type, message);
     },
 
     load: function(from, to, module)

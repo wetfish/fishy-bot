@@ -58,9 +58,10 @@ var prompt =
     {
         message = message.split(' ');
         var target = message.shift();
+        var type = message.shift();
         message = message.join(' ');
 
-        prompt.client.ctcp(target, message);
+        prompt.client.ctcp(target, type, message);
     },
 
     // Load a module
