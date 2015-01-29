@@ -68,20 +68,6 @@ var anus =
         }
     },
 
-    names: function(channel, users)
-    {
-        anus.users = [];
-        
-        for (var i = 0, keys = Object.keys(users), l = keys.length; i < l; ++i)
-        {
-            var user = keys[i];
-
-            // Don't slap yourself
-            if(user != "fishy")
-                anus.users.push(user);
-        }
-    },
-
     waiting: function(timeout)
     {
         if(anus.wait)
@@ -103,8 +89,26 @@ var anus =
         }, timeout * 60 * 1000);
     },
 
+    // Build list of users
+    get_users: function()
+    {
+        anus.users = [];
+        
+        for(var i = 0, keys = Object.keys(anus.client.chans['#wetfish'].users), l = keys.length; i < l; ++i)
+        {
+            var user = keys[i];
+
+            // Don't slap yourself
+            if(user != "fishy")
+                anus.users.push(user);
+        }
+
+    },
+
     random_target: function(from, message)
     {
+        anus.get_users();
+        
         // If there's a potential target
         if(message)
         {
@@ -134,8 +138,6 @@ var anus =
 
     slapanus: function(from, to, message)
     {
-        console.log("THIS IS THE THING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", anus.core.users);
-
         var timeout = anus.waiting();
         
         if(timeout)
@@ -147,18 +149,8 @@ var anus =
         // Pick a random target
         var target = anus.random_target(from, message);
 
-        // Refresh userlist from the server
-        anus.client.send('NAMES', '#wetfish');
-
-        // Wait a second
-        setTimeout(function()
-        {
-            // Regenerate target and hope we recieved a NAMES response by now
-            target = anus.random_target(from, message);
-
-            anus.reply('say', from, to, "4It's Anus Slapping Time!");
-        }, 1000);
-
+        // Queue actions
+        setTimeout(function() { anus.reply('say', from, to, "4It's Anus Slapping Time!"); }, 1000);
         setTimeout(function() { anus.reply('say', from, to, "fishy spits onto the floor!"); }, 3000);
         setTimeout(function() { anus.reply('say', from, to, "The saliva reads..."); }, 6000);
         setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
@@ -178,18 +170,8 @@ var anus =
         // Pick a random target
         var target = anus.random_target(from, message);
 
-        // Refresh userlist from the server
-        anus.client.send('NAMES', '#wetfish');
-
-        // Wait a second
-        setTimeout(function()
-        {
-            // Regenerate target and hope we recieved a NAMES response by now
-            target = anus.random_target(from, message);
-
-            anus.reply('say', from, to, "4IT'S 3S8U11P4E6R12!9!8 4ANUS SLAPPING TIME!");
-        }, 1000);
-
+        // Queue actions
+        setTimeout(function() { anus.reply('say', from, to, "4IT'S 3S8U11P4E6R12!9!8 4ANUS SLAPPING TIME!"); }, 1000);
         setTimeout(function() { anus.reply('say', from, to, "fishy spits onto the floor!"); }, 3000);
         setTimeout(function() { anus.reply('say', from, to, "The saliva reads..."); }, 6000);
         setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
@@ -210,19 +192,8 @@ var anus =
         // Pick a random target
         var target = anus.random_target(from, message);
 
-        // Refresh userlist from the server
-        anus.client.send('NAMES', '#wetfish');
-
-        // Wait a second
-        setTimeout(function()
-        {
-            // Regenerate target and hope we recieved a NAMES response by now
-            target = anus.random_target(from, message);
-
-            anus.reply('say', from, to, "6,4I13,07T12,08S3,09 8,12S7,13U4,06P6,04E13,07R12,08 3,09S8,12L7,13A4,06P6,04 13,07A12,08N3,09U8,12S7,13 4,06v6,04213,07 12,08!3,09!8,12!7,13!4,06!6,04!13,07!12,08!3,09!");
-        }, 1000);
-
-
+        // Queue actions
+        setTimeout(function() { anus.reply('say', from, to, "6,4I13,07T12,08S3,09 8,12S7,13U4,06P6,04E13,07R12,08 3,09S8,12L7,13A4,06P6,04 13,07A12,08N3,09U8,12S7,13 4,06v6,04213,07 12,08!3,09!8,12!7,13!4,06!6,04!13,07!12,08!3,09!"); }, 1000);
         setTimeout(function() { anus.reply('say', from, to, "fishy spits onto the floor!"); }, 3000);
         setTimeout(function() { anus.reply('say', from, to, "The saliva reads..."); }, 6000);
         setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
@@ -243,19 +214,8 @@ var anus =
         // Pick a random target
         var target = anus.random_target(from, message);
 
-        // Refresh userlist from the server
-        anus.client.send('NAMES', '#wetfish');
-
-        // Wait a second
-        setTimeout(function()
-        {
-            // Regenerate target and hope we recieved a NAMES response by now
-            target = anus.random_target(from, message);
-
-            anus.reply('say', from, to, "9IT'S 3S8U11P4E6R12!9!8 9SUCK UR DICK TIME!");
-        }, 1000);
-
-
+        // Queue actions
+        setTimeout(function() { anus.reply('say', from, to, "9IT'S 3S8U11P4E6R12!9!8 9SUCK UR DICK TIME!"); }, 1000);
         setTimeout(function() { anus.reply('say', from, to, "fishy opens his mouth!"); }, 3000);
         setTimeout(function() { anus.reply('say', from, to, "HE TAKES THE LOAD..."); }, 6000);
         setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
@@ -275,18 +235,8 @@ var anus =
         // Pick a random target
         var target = anus.random_target(from, message);
 
-        // Refresh userlist from the server
-        anus.client.send('NAMES', '#wetfish');
-
-        // Wait a second
-        setTimeout(function()
-        {
-            // Regenerate target and hope we recieved a NAMES response by now
-            target = anus.random_target(from, message);
-
-            anus.reply('say', from, to, "1IT'S SUPER SLAP A NIGGAS ANUS TIME!!!");
-        }, 1000);
-
+        // Queue actions
+        setTimeout(function() { anus.reply('say', from, to, "1IT'S SUPER SLAP A NIGGAS ANUS TIME!!!"); }, 1000);
         setTimeout(function() { anus.reply('say', from, to, "This nigga fishy GETS BUCK!"); }, 3000);
         setTimeout(function() { anus.reply('say', from, to, "What it do ...? "); }, 6000);
         setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
@@ -297,13 +247,11 @@ var anus =
     bind: function()
     {
         anus.client.addListener('message', anus.message);
-        anus.client.addListener('names', anus.names);
     },
 
     unbind: function()
     {
         anus.client.removeListener('message', anus.message);
-        anus.client.removeListener('names', anus.names);
     }
 }
 
