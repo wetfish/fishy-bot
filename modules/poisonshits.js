@@ -1,24 +1,6 @@
 // secure random number generation is IMPORTANT
 var crypto = require("crypto");
 
-/* Classic #wetfish commands
- *
- * slapshit
-
-Interested in a little palm to anal action?
-
-How to perform the deed.
-
-!slapshit - Casually slaps a random users shit.
-!superslapshit - Knocks a random user out of the room by the shit.
-!superslapshitv2 - Knocks a random user out of the room by the shit, but v2.
-!supersuckurdick - I don't know how or WHY, it's just here OKAY?
-!superslapaniggasshit - Nigga you better shut yo gatdam lip.
-
-*
-*
-*/
-
 var shit =
 {
     commands: ['poisonshits', 'superpoisonshits'],
@@ -76,20 +58,6 @@ var shit =
         }
     },
 
-    names: function(channel, users)
-    {
-        shit.users = [];
-        
-        for (var i = 0, keys = Object.keys(users), l = keys.length; i < l; ++i)
-        {
-            var user = keys[i];
-
-            // Don't poison yourself
-            if(user != "fishy")
-                shit.users.push(user);
-        }
-    },
-
     waiting: function(timeout)
     {
         if(shit.wait)
@@ -111,8 +79,26 @@ var shit =
         }, timeout * 60 * 1000);
     },
 
+    // Build list of users
+    get_users: function()
+    {
+        shit.users = [];
+        
+        for(var i = 0, keys = Object.keys(shit.client.chans['#wetfish'].users), l = keys.length; i < l; ++i)
+        {
+            var user = keys[i];
+
+            // Don't shit yourself
+            if(user != "fishy")
+                shit.users.push(user);
+        }
+
+    },
+
     random_target: function(from, message)
     {
+        shit.get_users();
+        
         // If there's a potential target
         if(message)
         {
@@ -161,18 +147,8 @@ var shit =
         // Pick a random target
         var target = shit.random_target(from, message);
 
-        // Refresh userlist from the server
-        shit.client.send('NAMES', '#wetfish');
-
         // Wait a second
-        setTimeout(function()
-        {
-            // Regenerate target and hope we recieved a NAMES response by now
-            target = shit.random_target(from, message);
-
-            shit.reply('say', from, to, "fishy murmurs a ritual...");
-        }, 1000);
-
+        setTimeout(function() { shit.reply('say', from, to, "fishy murmurs a ritual..."); }, 1000);
         setTimeout(function() { shit.reply('say', from, to, request+"'s and "+target+"'s names materialize out of turds"); }, 3000);
         setTimeout(function() { shit.reply('say', from, to, "... "+target+"!"); }, 6000);
         setTimeout(function() { shit.client.send('KICK', to, target, "POISONSHITSPOISONSHITSPOISONSHITSPOISONSHITSPOISONSHITSPOISONSHITS"); }, 8000);
@@ -187,13 +163,11 @@ var shit =
     bind: function()
     {
         shit.client.addListener('message', shit.message);
-        shit.client.addListener('names', shit.names);
     },
 
     unbind: function()
     {
         shit.client.removeListener('message', shit.message);
-        shit.client.removeListener('names', shit.names);
     }
 }
 
