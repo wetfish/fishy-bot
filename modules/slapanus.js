@@ -21,7 +21,7 @@ How to perform the deed.
 
 var anus =
 {
-    commands: ['slapanus', 'superslapanus', 'superslapanusv2', 'supersuckurdick', 'superslapaniggasanus'],
+    commands: ['slapanus', 'superslapanus', 'superslapanusv2', 'supersuckurdick', 'superslapaniggasanus', 'superslapsiesta'],
     client: false,
     core: false,
     users: [],
@@ -242,6 +242,39 @@ var anus =
         setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
         setTimeout(function() { anus.reply('action', from, to, " 1SUPER SLAPS "+target+"'s BLACK ANUS!"); }, 10000);
         setTimeout(function() { anus.client.send('KICK', to, target, "1THISNIGGASDOWNTHISNIGGASDOWNTHISNIGGASDOWNTHISNIGGASDOWNTHISNIGGASDOWNTHISNIGGASDOWN"); }, 20000);
+    },
+
+    superslapsiesta: function(from, to, message)
+    {
+        var slaps =
+        [
+            '11¡02S12Ú06P13E05R 04B07O08F03E09T10A11D02A 12A06N13O 05N04O 07M08Á03S 09L10E11C02H12E 06M13A05T04E07R08N03A09!',
+            '10¡11S02Ú12P06E13R 05B04O07F08E03T09A10D11A 02A12N06O 13N05O 04M07Á08S 03L09E10C11H02E 12M06A13T05E04R07N08A03!',
+            '09¡10S11Ú02P12E06R 13B05O04F07E08T03A09D10A 11A02N12O 06N13O 05M04Á07S 08L03E09C10H11E 02M12A06T13E05R04N07A08!',
+            '03¡09S10Ú11P02E12R 06B13O05F04E07T08A03D09A 10A11N02O 12N06O 13M05Á04S 07L08E03C09H10E 11M02A12T06E13R05N04A07!'
+        ];
+
+        var timeout = anus.waiting(0.5);
+        
+        if(timeout)
+        {
+            anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
+            return;
+        }
+        
+        // Pick a random target
+        var target = anus.random_target(from, message);
+
+        // Pick a random slap
+        var slap = crypto.randomBytes(1).readUInt8(0) % 4;
+
+        // Queue actions
+        setTimeout(function() { anus.reply('say', from, to, "4¡SU ANO 10S11Ú02P12E06R4 BOFETADA TIEMPO!"); }, 1000);
+        setTimeout(function() { anus.reply('say', from, to, from+" escupe en el suelo!"); }, 3000);
+        setTimeout(function() { anus.reply('say', from, to, "la saliva lee .."); }, 6000);
+        setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
+        setTimeout(function() { anus.reply('action', from, to, "05S04Ú07P08E03R abofetea "+target+" ano!!"); }, 10000);
+        setTimeout(function() { anus.client.send('KICK', to, target, slaps[slap]); }, 12000);
     },
 
     bind: function()
