@@ -216,7 +216,7 @@ var anus =
 
         // Queue actions
         setTimeout(function() { anus.reply('say', from, to, "9IT'S 3S8U11P4E6R12!9!8 9SUCK UR DICK TIME!"); }, 1000);
-        setTimeout(function() { anus.reply('say', from, to, "fishy opens his mouth!"); }, 3000);
+        setTimeout(function() { anus.reply('say', from, to, from+" opens his mouth!"); }, 3000);
         setTimeout(function() { anus.reply('say', from, to, "HE TAKES THE LOAD..."); }, 6000);
         setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
         setTimeout(function() { anus.client.send('KICK', to, target, "3S8U11P4E6R10C9O8C4K3S8U11P4E6R10C9O8C4K3S8U11P4E6R10C9O8C4K3S8U11P4E6R10C9O8C4K3S8U11P4E6R10C9O8C4K"); }, 12000);
