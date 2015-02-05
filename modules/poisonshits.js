@@ -95,36 +95,43 @@ var shit =
 
     },
 
-    random_target: function(from, message)
+    random_target: function(not)
     {
-        shit.get_users();
+        // Make sure not is an array
+        if(!Array.isArray(not))
+            not = [];
         
-        // If there's a potential target
-        if(message)
+        // Loop 10 times trying to find a unique target
+        for(var i = 0; i < 10; i++)
         {
-            var message = message.split(' ');
-            var action = crypto.randomBytes(1).readUInt8(0) % 3;
+            var index = crypto.randomBytes(1).readUInt8(0) % shit.users.length;
 
-            // Attack the target
-            if(action == 0)
-            {
-                // If the target doesn't exist
-                if(shit.users.indexOf(message[0]) < 0)
-                    return from;
-
-                return message[0];
-            }
-            
-            // Attack the caster
-            else if(action == 1)
-                return from;
-
-            // Else, use the default behavior
+            // If this is a unique target
+            if(not.indexOf(shit.users[index]) == -1)
+                return shit.users[index];
         }
+    },
+
+    random_targets: function(from, message)
+    {
+        // Refresh the user list
+        shit.get_users();
+
+        // If there's a potential target
+        message = shit.parse(message);
         
-        var index = crypto.randomBytes(1).readUInt8(0) % shit.users.length;
-        
-        return shit.users[index];
+        var target =
+        {
+            request: message[0],
+            random: random_target(),
+            user: from
+        };
+
+        // Make sure there's actually a requested target, but not the one we already generated!
+        if(!target.request)
+            target.request = random_target([target.random]);
+
+        return target;
     },
 
     poisonshits: function(from, to, message)
@@ -137,21 +144,24 @@ var shit =
             return;
         }
 
-        var request = shit.parse(message);
+        // Pick random targets
+        var target = shit.random_targets(from, message);
 
-        if(request[0].trim() == "")
-            request = shit.random_target(from, message);
+        // Pick the actual target at random
+        var action = crypto.randomBytes(1).readUInt8(0) % 3;
+
+        if(action == 0)
+            target.actual = target.request;
+        else if(action == 1)
+            target.actual = target.random;
         else
-            request = request[0].trim();
-        
-        // Pick a random target
-        var target = shit.random_target(from, message);
+            target.actual = target.user;
 
         // Wait a second
         setTimeout(function() { shit.reply('say', from, to, "fishy murmurs a ritual..."); }, 1000);
-        setTimeout(function() { shit.reply('say', from, to, request+"'s and "+target+"'s names materialize out of turds"); }, 3000);
-        setTimeout(function() { shit.reply('say', from, to, "... "+target+"!"); }, 6000);
-        setTimeout(function() { shit.client.send('KICK', to, target, "POISONSHITSPOISONSHITSPOISONSHITSPOISONSHITSPOISONSHITSPOISONSHITS"); }, 8000);
+        setTimeout(function() { shit.reply('say', from, to, target.request+"'s and "+target.random+"'s names materialize out of turds"); }, 3000);
+        setTimeout(function() { shit.reply('say', from, to, "... "+target.actual+"!"); }, 6000);
+        setTimeout(function() { shit.client.send('KICK', to, target.actual, "POISONSHITSPOISONSHITSPOISONSHITSPOISONSHITSPOISONSHITSPOISONSHITS"); }, 8000);
     },
 
     superpoisonshits: function(from, to, message)
