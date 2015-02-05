@@ -166,8 +166,36 @@ var shit =
 
     superpoisonshits: function(from, to, message)
     {
-        // Not implimented
-        return;
+        var timeout = shit.waiting();
+        
+        if(timeout)
+        {
+            shit.reply('say', from, from, "Can't shit, won't shit. ("+timeout+" seconds remaining)");
+            return;
+        }
+
+        // Pick random targets
+        var target = shit.random_targets(from, message);
+
+        // Pick the actual target at random
+        var action = crypto.randomBytes(1).readUInt8(0) % 3;
+
+        if(action == 0)
+            target.actual = target.request;
+        else if(action == 1)
+            target.actual = target.random;
+        else
+            target.actual = target.user;
+
+        // Wait a second
+        setTimeout(function() { shit.reply('say', from, to, "fishy murmurs a ritual..."); }, 1000);
+        setTimeout(function() { shit.reply('say', from, to, target.request+"'s and "+target.random+"'s names materialize out of turds"); }, 3000);
+        setTimeout(function() { shit.reply('say', from, to, "... "+target.actual+" is cursed with a bleeding anus!"); }, 6000);
+
+        // Generate three random times between 6 seconds and 5 hours
+        setTimeout(function() { shit.client.send('KICK', to, target.actual, "SUPERPOISONSHITSSUPERPOISONSHITSSUPERPOISONSHITSSUPERPOISONSHITSSUPERPOISONSHITSSUPERPOISONSHITS"); }, Math.floor((Math.random() * 5 * 60 * 60 * 1000) + 6000));
+        setTimeout(function() { shit.client.send('KICK', to, target.actual, "SUPERPOISONSHITSSUPERPOISONSHITSSUPERPOISONSHITSSUPERPOISONSHITSSUPERPOISONSHITSSUPERPOISONSHITS"); }, Math.floor((Math.random() * 5 * 60 * 60 * 1000) + 6000));
+        setTimeout(function() { shit.client.send('KICK', to, target.actual, "SUPERPOISONSHITSSUPERPOISONSHITSSUPERPOISONSHITSSUPERPOISONSHITSSUPERPOISONSHITSSUPERPOISONSHITS"); }, Math.floor((Math.random() * 5 * 60 * 60 * 1000) + 6000));
     },
 
     bind: function()
