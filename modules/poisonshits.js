@@ -123,13 +123,13 @@ var shit =
         var target =
         {
             request: message[0],
-            random: random_target(),
+            random: shit.random_target(),
             user: from
         };
 
         // Make sure there's actually a requested target, but not the one we already generated!
         if(!target.request)
-            target.request = random_target([target.random]);
+            target.request = shit.random_target([target.random]);
 
         return target;
     },
