@@ -8,7 +8,9 @@ var shit =
     core: false,
     users: [],
     wait: false,
+    hostWait: {},
     timeout: false,
+    hostTimeout: {},
 
     parse: function(input)
     {
@@ -17,10 +19,7 @@ var shit =
             
         return input.split(" ");
     },
-    
-    // Accept commands from shit input!
-    // Based on user/hostname
- 
+     
     // This really should be a core function or something
     reply: function(type, from, to, message)
     {
@@ -39,8 +38,6 @@ var shit =
 
     message: function(from, to, message, details)
     {
-        var userhost = details.nick + '@' + details.host;
-
         // shit commands are prefixed with !
         if(message.charAt(0) == "!")
         {
@@ -53,13 +50,21 @@ var shit =
             if(shit.commands.indexOf(command) > -1)
             {
                 message = message.join(' ');
-                shit[command](from, to, message);
+                shit[command](from, to, message, details);
             }
         }
     },
 
-    waiting: function(timeout)
+    waiting: function(timeout, host, extra)
     {
+        // If there's a timeout for this user specifically
+        if(shit.hostWait[host])
+        {
+            var timeout = (shit.hostTimeout[host].getTime() - new Date().getTime()) / 1000;
+            return timeout;
+        }
+
+        // If there's a general timeout
         if(shit.wait)
         {
             var timeout = (shit.timeout.getTime() - new Date().getTime()) / 1000;
@@ -69,6 +74,10 @@ var shit =
         if(typeof timeout == "undefined")
             timeout = 1;
 
+        if(typeof extra == "undefined")
+            extra = 0;
+
+        // Set general timeouts
         var date = new Date();
         shit.timeout = new Date(date.getTime() + (timeout * 60 * 1000));
 
@@ -77,6 +86,15 @@ var shit =
             shit.wait = false;
             shit.timeout = false;
         }, timeout * 60 * 1000);
+
+        // Set user-specific timeouts
+        shit.hostTimeout[host] = new Date(date.getTime() + (extra * 60 * 1000));
+
+        shit.hostWait[host] = setTimeout(function()
+        {
+            shit.hostWait[host] = false;
+            shit.hostTimeout[host] = false;
+        }, extra * 60 * 1000);
     },
 
     // Build list of users
@@ -134,9 +152,9 @@ var shit =
         return target;
     },
 
-    poisonshits: function(from, to, message)
+    poisonshits: function(from, to, message, details)
     {
-        var timeout = shit.waiting();
+        var timeout = shit.waiting(5, details.host);
         
         if(timeout)
         {
@@ -164,9 +182,9 @@ var shit =
         setTimeout(function() { shit.client.send('KICK', to, target.actual, "POISONSHITSPOISONSHITSPOISONSHITSPOISONSHITSPOISONSHITSPOISONSHITS"); }, 8000);
     },
 
-    superpoisonshits: function(from, to, message)
+    superpoisonshits: function(from, to, message, details)
     {
-        var timeout = shit.waiting();
+        var timeout = shit.waiting(15, details.host, 5 * 60);
         
         if(timeout)
         {
