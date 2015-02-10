@@ -33,7 +33,7 @@ var butt =
                     choice = choice.toUpperCase();
 
                 // Check if the original message is surrounded by any special characters
-                var surrounded = message[i].match(/^([^a-z]+)?(?:.*?)([^a-z]+)?$/);
+                var surrounded = message[i].match(/^([^a-z]+)?(?:.*?)([^a-z]+)?$/i);
 
                 message[i] = (surrounded[1] || '') + choice + (surrounded[2] || '');
                 mutated = true;
