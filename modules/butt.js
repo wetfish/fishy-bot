@@ -1,6 +1,8 @@
 // Buttbot functionality!
 // I LOVE BUTTS
 
+var url = require("url");
+
 // secure random number generation is IMPORTANT
 var crypto = require("crypto");
 
@@ -17,6 +19,10 @@ var butt =
 
         for(var i = 0, l = message.length; i < l; i++)
         {
+            // Prevent repeating URLs
+            if(url.parse(message[i]).protocol)
+		message[i] = '';
+
             var random = new Buffer(crypto.randomBytes(1)).readUInt8(0);
 
             if(random < 44)
@@ -124,6 +130,7 @@ module.exports =
     {
         butt.unbind();
         delete butt;
+        delete url;
         delete crypto;
     }
 }
