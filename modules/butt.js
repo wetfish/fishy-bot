@@ -20,7 +20,7 @@ var butt =
         for(var i = 0, l = message.length; i < l; i++)
         {
             // Prevent repeating URLs
-            if(url.parse(message[i]).protocol)
+            if(url.parse(message[i]).slashes)
 		message[i] = '';
 
             var random = new Buffer(crypto.randomBytes(1)).readUInt8(0);
