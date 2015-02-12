@@ -21,7 +21,7 @@ How to perform the deed.
 
 var anus =
 {
-    commands: ['slapanus', 'superslapanus', 'superslapanusv2', 'supersuckurdick', 'superslapaniggasanus', 'superslapsiesta'],
+    commands: ['slapanus', 'superslapanus', 'superslapanusv2', 'supersuckurdick', 'superslapaniggasanus', 'superslapsiesta', 'superslapbaka'],
     client: false,
     core: false,
     users: [],
@@ -258,6 +258,7 @@ var anus =
         
         if(timeout)
         {
+            // TODO: Translate to spanish?
             anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
             return;
         }
@@ -275,6 +276,29 @@ var anus =
         setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
         setTimeout(function() { anus.reply('action', from, to, "05S04Ú07P08E03R abofetea "+target+" ano!!"); }, 10000);
         setTimeout(function() { anus.client.send('KICK', to, target, slaps[slap]); }, 12000);
+    },
+
+    superslapbaka: function(from, to, message)
+    {
+        var timeout = anus.waiting(0.5);
+        
+        if(timeout)
+        {
+            // TODO: Translate to japanese?
+            anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
+            return;
+        }
+        
+        // Pick a random target
+        var target = anus.random_target(from, message);
+
+        // Queue actions
+        setTimeout(function() { anus.reply('say', from, to, "4Sūpa kōmon tataki no jikandesu!"); }, 1000);
+        setTimeout(function() { anus.reply('say', from, to, from+" wa yuka ni haku!"); }, 3000);
+        setTimeout(function() { anus.reply('say', from, to, "Daeki dokusho..."); }, 6000);
+        setTimeout(function() { anus.reply('say', from, to, target+"!"); }, 8000);
+        setTimeout(function() { anus.reply('action', from, to, "wa SUUPAA!! "+target+" no kōmon o tataku!!"); }, 10000);
+        setTimeout(function() { anus.client.send('KICK', to, target, "SUPAAOSHIRISUPAAOSHIRISUUPAOSHIRISUUPAOSHIRISUUPAOSHIRI"); }, 12000);
     },
 
     bind: function()
