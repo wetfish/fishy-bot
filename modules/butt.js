@@ -21,7 +21,7 @@ var butt =
         {
             // Prevent repeating URLs
             if(url.parse(message[i]).slashes)
-		message[i] = '';
+                message[i] = '';
 
             var random = new Buffer(crypto.randomBytes(1)).readUInt8(0);
 
@@ -40,6 +40,10 @@ var butt =
 
                 // Check if the original message is surrounded by any special characters
                 var surrounded = message[i].match(/^([^a-z]+)?(?:.*?)([^a-z]+)?$/i);
+
+                // Make sure the entire string isn't special characters
+                if(surrounded[0] == surrounded[1])
+                    surrounded[1] = false;
 
                 message[i] = (surrounded[1] || '') + choice + (surrounded[2] || '');
                 mutated = true;
