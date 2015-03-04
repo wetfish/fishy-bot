@@ -76,10 +76,6 @@ var topic =
         // Don't process messages from ignored users
         if(topic.ignore.indexOf(from.toLowerCase()) != -1)
             return;
-
-        // Ignore everyone who isn't rachel while the topic system is converted
-        if(from != 'rachel')
-            return;
         
         // Fishy's commands are prefixed with :
         if(message.charAt(0) == ":")
@@ -135,18 +131,18 @@ var topic =
         list.push(new_topic);
     },
 
-    log: function(from, to, message)
+    log: function(from, channel, message)
     {
-        // Make sure this command has a valid target
-        if(to.indexOf('#') != 0)
+        // Make sure this command has a valid channel
+        if(channel.indexOf('#') != 0)
         {
             topic.client.say(from, "You must use :topic log in a channel, or use :topic log [channel].");
             return;
         }
 
-        if(typeof topic.list[to] == "undefined")
+        if(typeof topic.list[channel] == "undefined")
         {
-            topic.client.say(from, "No topic log exists for " + to);
+            topic.client.say(from, "No topic log exists for " + channel);
             return;
         }
  
@@ -158,40 +154,67 @@ var topic =
         else
             count *= -1;
         
-        var most_recent = topic.list[to].slice(count);
+        var most_recent = topic.list[channel].slice(count);
 
         for(var i = 0, l = most_recent.length; i < l; i++)
         {
             var recent = most_recent[i];
-            var index = topic.list[to].indexOf(recent);
+            var index = topic.list[channel].indexOf(recent);
 
             if(typeof recent.requested_by != "undefined")
                 recent.user = recent.requested_by;
             else
                 recent.user = recent.set_by.split('!')[0];
                 
-            topic.client.say(from, recent.user+" set "+recent.channel+"'s topic to "+recent.message+"\u000f [#"+index+"]");
+            topic.client.say(from, recent.user+" set "+channel+"'s topic to "+recent.message+"\u000f [#"+index+"]");
         }
     },
 
-    restore: function(from, to, message)
+    restore: function(from, channel, message) 
     {
+        // Make sure this command has a valid channel
+        if(channel.indexOf('#') != 0)
+        {
+            topic.client.say(from, "You must use :topic restore in a channel, or use :topic restore [channel].");
+            return;
+        }
+
+        if(typeof topic.list[channel] == "undefined")
+        {
+            topic.client.say(from, "No topic log exists for " + channel);
+            return;
+        }
+
         var index = parseInt(message);
 
         // If an invalid topic ID is passed (or no topic ID at all)
-        if(typeof topic.list[index] == "undefined")
+        if(typeof topic.list[channel][index] == "undefined")
         {
             // Use most recent topic before the current
-            index = topic.list.length - 2;
+            index = topic.list[channel].length - 2;
         }
 
         topic.user = from;
-        topic.client.send('TOPIC', '#wetfish', topic.list[index].message);
+        topic.client.send('TOPIC', channel, topic.list[channel][index].message);
     },
 
-    replace: function(from, to, message)
+    replace: function(from, channel, message)
     {
-        var last = topic.list[topic.list.length - 1];
+        // Make sure this command has a valid channel
+        if(channel.indexOf('#') != 0)
+        {
+            topic.client.say(from, "You must use :topic replace in a channel, or use :topic replace [channel].");
+            return;
+        }
+
+        if(typeof topic.list[channel] == "undefined")
+        {
+            topic.client.say(from, "No topic log exists for " + channel);
+            return;
+        }
+
+        var index = topic.list[channel].length - 1;
+        var last = topic.list[channel][index];
         var sections = topic.parse(last.message);
 
         message = message.split(" ");
@@ -210,11 +233,18 @@ var topic =
 
         // Set the new topic
         topic.user = from;
-        topic.client.send('TOPIC', '#wetfish', topic.build(sections));
+        topic.client.send('TOPIC', channel, topic.build(sections));
     },
 
-    set: function(from, to, message)
+    set: function(from, channel, message)
     {
+        // Make sure this command has a valid channel
+        if(channel.indexOf('#') != 0)
+        {
+            topic.client.say(from, "You must use :topic set in a channel, or use :topic set [channel].");
+            return;
+        }
+        
         var delimiter = "|";
         message = message.split(" ");
 
@@ -233,13 +263,27 @@ var topic =
         sections = message.split(delimiter);
         
         topic.user = from;
-        topic.client.send('TOPIC', '#wetfish', topic.build(sections));
+        topic.client.send('TOPIC', channel, topic.build(sections));
     },
 
 
-    append: function(from, to, message)
+    append: function(from, channel, message)
     {
-        var last = topic.list[topic.list.length - 1];
+        // Make sure this command has a valid channel
+        if(channel.indexOf('#') != 0)
+        {
+            topic.client.say(from, "You must use :topic append in a channel, or use :topic append [channel].");
+            return;
+        }
+
+        if(typeof topic.list[channel] == "undefined")
+        {
+            topic.client.say(from, "No topic log exists for " + channel);
+            return;
+        }
+
+        var index = topic.list[channel].length - 1;
+        var last = topic.list[channel][index];
         var sections = topic.parse(last.message);
 
         var delimiter = "|";
@@ -260,14 +304,28 @@ var topic =
         sections = sections.concat(message.split(delimiter));
         
         topic.user = from;
-        topic.client.send('TOPIC', '#wetfish', topic.build(sections));
+        topic.client.send('TOPIC', channel, topic.build(sections));
     },
 
-    prepend: function(from, to, message)
+    prepend: function(from, channel, message)
     {
-        var last = topic.list[topic.list.length - 1];
+        // Make sure this command has a valid channel
+        if(channel.indexOf('#') != 0)
+        {
+            topic.client.say(from, "You must use :topic prepend in a channel, or use :topic prepend [channel].");
+            return;
+        }
+
+        if(typeof topic.list[channel] == "undefined")
+        {
+            topic.client.say(from, "No topic log exists for " + channel);
+            return;
+        }
+        
+        var index = topic.list[channel].length - 1;
+        var last = topic.list[channel][index];
         var sections = topic.parse(last.message);
-        var channel = sections.shift();
+        var first = sections.shift();
 
         var delimiter = "|";
         message = message.split(" ");
@@ -287,15 +345,29 @@ var topic =
         sections = message.split(delimiter).concat(sections);
 
         // Restore the first topic section
-        sections.unshift(channel);
+        sections.unshift(first);
         
         topic.user = from;
-        topic.client.send('TOPIC', '#wetfish', topic.build(sections));
+        topic.client.send('TOPIC', channel, topic.build(sections));
     },
 
-    insert: function(from, to, message)
+    insert: function(from, channel, message)
     {
-        var last = topic.list[topic.list.length - 1];
+        // Make sure this command has a valid channel
+        if(channel.indexOf('#') != 0)
+        {
+            topic.client.say(from, "You must use :topic insert in a channel, or use :topic insert [channel].");
+            return;
+        }
+
+        if(typeof topic.list[channel] == "undefined")
+        {
+            topic.client.say(from, "No topic log exists for " + channel);
+            return;
+        }
+        
+        var index = topic.list[channel].length - 1;
+        var last = topic.list[channel][index];
         var sections = topic.parse(last.message);
 
         var delimiter = "|";
@@ -324,14 +396,28 @@ var topic =
         Array.prototype.splice.apply(sections, [index, 0].concat(message.split(delimiter)));
 
         topic.user = from;
-        topic.client.send('TOPIC', '#wetfish', topic.build(sections));
+        topic.client.send('TOPIC', channel, topic.build(sections));
     },
     
-    delete: function(from, to, message)
+    delete: function(from, channel, message)
     {
+        // Make sure this command has a valid channel
+        if(channel.indexOf('#') != 0)
+        {
+            topic.client.say(from, "You must use :topic delete in a channel, or use :topic delete [channel].");
+            return;
+        }
+
+        if(typeof topic.list[channel] == "undefined")
+        {
+            topic.client.say(from, "No topic log exists for " + channel);
+            return;
+        }
+        
         message = message.split(" ");
 
-        var last = topic.list[topic.list.length - 1];
+        var lastIndex = topic.list[channel].length - 1;
+        var last = topic.list[channel][lastIndex];
         var sections = topic.parse(last.message);
 
         var index = parseInt(message[0]) - 1;
@@ -347,23 +433,23 @@ var topic =
         sections.splice(index, length);
 
         topic.user = from;
-        topic.client.send('TOPIC', '#wetfish', topic.build(sections));
+        topic.client.send('TOPIC', channel, topic.build(sections));
     },
 
     help: function(from, to)
     {
-            //init documentu sendy
-            topic.client.send('PRIVMSG', from, ':topic help! hi!');
-            topic.client.send('PRIVMSG', from, '  :topic log [count] -- pms a list of the last 3 topics, or user requested count');
-            topic.client.send('PRIVMSG', from, '  :topic restore [log id] -- restores last topic (or optional id from the log list)');
-            topic.client.send('PRIVMSG', from, '  :topic replace [section id] [text] -- Replace a section of the current topic with new text');
-            topic.client.send('PRIVMSG', from, '  :topic set [delimiter] [text] -- Sets text as the topic, broken into sections delimited by a user specified delimiter or the default value of |');
-            topic.client.send('PRIVMSG', from, '  :topic delete [index] [count] -- Delete a section of the topic');
-            topic.client.send('PRIVMSG', from, '  :topic append [delimiter] [text] -- Append new sections to the topic');
-            topic.client.send('PRIVMSG', from, '  :topic prepend [delimiter] [text] -- Prepend new sections to the topic');
-            topic.client.send('PRIVMSG', from, '  :topic insert [index] [delimiter] [text] -- Create a new section at a specific location in the topic');
+        //init documentu sendy
+        topic.client.send('PRIVMSG', from, ':topic help! hi!');
+        topic.client.send('PRIVMSG', from, '  :topic log [count] -- pms a list of the last 3 topics, or user requested count');
+        topic.client.send('PRIVMSG', from, '  :topic restore [log id] -- restores last topic (or optional id from the log list)');
+        topic.client.send('PRIVMSG', from, '  :topic replace [section id] [text] -- Replace a section of the current topic with new text');
+        topic.client.send('PRIVMSG', from, '  :topic set [delimiter] [text] -- Sets text as the topic, broken into sections delimited by a user specified delimiter or the default value of |');
+        topic.client.send('PRIVMSG', from, '  :topic delete [index] [count] -- Delete a section of the topic');
+        topic.client.send('PRIVMSG', from, '  :topic append [delimiter] [text] -- Append new sections to the topic');
+        topic.client.send('PRIVMSG', from, '  :topic prepend [delimiter] [text] -- Prepend new sections to the topic');
+        topic.client.send('PRIVMSG', from, '  :topic insert [index] [delimiter] [text] -- Create a new section at a specific location in the topic');
 
-            topic.client.send('PRIVMSG', from, '--end of response');
+        topic.client.send('PRIVMSG', from, '--end of response');
     },
 
     // Function for converting topic logs from older formats
