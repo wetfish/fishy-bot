@@ -71,23 +71,6 @@ var topic =
         return output.join(' ');
     },
 
-    // This really should be a core function or something
-    reply: function(type, from, to, message)
-    {
-        // If this is a channel message
-        if(to.charAt(0) == '#')
-        {
-            topic.client[type](to, message);
-            console.log("["+to+"] <fishy> "+message);
-        }
-        // This must be a private message ^_~
-        else
-        {
-            topic.client[type](from, message);
-            console.log("["+from+"] <fishy> "+message);
-        }
-    },
-
     message: function(from, to, message, details)
     {
         // Don't process messages from ignored users
@@ -110,6 +93,13 @@ var topic =
             // If this command is valid
             if(command == 'topic' && topic.actions.indexOf(action) > -1)
             {
+                // Check if a channel is specified in the command
+                // Make sure the length is > 1, otherwise this might be a delimiter!
+                if(message[0] && message[0].indexOf('#') ==  0 && message[0].length > 1)
+                {
+                    to = message.shift();
+                }
+                
                 message = message.join(' ');
                 topic[action](from, to, message);
             }
@@ -118,16 +108,23 @@ var topic =
 
     change: function(channel, message, set_by)
     {
-        if(topic.list.length)
+        if(typeof topic.list[channel] == "undefined")
         {
-            var last = topic.list[topic.list.length - 1];
+            topic.list[channel] = [];
+        }
+
+        var list = topic.list[channel];
+        
+        if(list.length)
+        {
+            var last = list[list.length - 1];
 
             // Don't push duplicate topics to the list
-            if(channel == last.channel && message == last.message && set_by  == last.set_by)
+            if(message == last.message && set_by  == last.set_by)
                 return;
         }
 
-        var new_topic = {date: new Date(), channel: channel, message: message, set_by: set_by};
+        var new_topic = {date: new Date(), message: message, set_by: set_by};
 
         if(set_by == 'fishy' && topic.user)
         {
@@ -135,11 +132,24 @@ var topic =
             topic.user = false;
         }
         
-        topic.list.push(new_topic);
+        list.push(new_topic);
     },
 
     log: function(from, to, message)
     {
+        // Make sure this command has a valid target
+        if(to.indexOf('#') != 0)
+        {
+            topic.client.say(from, "You must use :topic log in a channel, or use :topic log [channel].");
+            return;
+        }
+
+        if(typeof topic.list[to] == "undefined")
+        {
+            topic.client.say(from, "No topic log exists for " + to);
+            return;
+        }
+ 
         var count = parseInt(message);
 
         // Allow users to specify how many topics they want to see (maximum 50), defaulting to -3
@@ -148,12 +158,12 @@ var topic =
         else
             count *= -1;
         
-        var most_recent = topic.list.slice(count);
+        var most_recent = topic.list[to].slice(count);
 
         for(var i = 0, l = most_recent.length; i < l; i++)
         {
             var recent = most_recent[i];
-            var index = topic.list.indexOf(recent);
+            var index = topic.list[to].indexOf(recent);
 
             if(typeof recent.requested_by != "undefined")
                 recent.user = recent.requested_by;
@@ -373,7 +383,7 @@ var topic =
                 var channel = old.channel;
                 delete old.channel;
 
-                if(fixed[channel] === undefined)
+                if(typeof fixed[channel] == "undefined")
                 {
                     fixed[channel] = [];
                 }
