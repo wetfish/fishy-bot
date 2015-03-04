@@ -2,8 +2,8 @@ var fs = require('fs');
 
 var topic =
 {
-    // This is a list of topics
-    list: [],
+    // An object which lists topics by channel
+    list: {version: 1},
     actions: ['log', 'restore', 'replace', 'set', 'append', 'prepend', 'insert', 'delete', 'help'],
     client: false,
     core: false,
@@ -92,6 +92,10 @@ var topic =
     {
         // Don't process messages from ignored users
         if(topic.ignore.indexOf(from.toLowerCase()) != -1)
+            return;
+
+        // Ignore everyone who isn't rachel while the topic system is converted
+        if(from != 'rachel')
             return;
         
         // Fishy's commands are prefixed with :
@@ -312,22 +316,7 @@ var topic =
         topic.user = from;
         topic.client.send('TOPIC', '#wetfish', topic.build(sections));
     },
-
-help: function(from, to)
-{
-//init documentu sendy
-        topic.client.send('PRIVMSG', from, ':topic help! hi!');
-        topic.client.send('PRIVMSG', from, '  :topic log [count] -- pms a list of the last 3 topics, or user requested count');
-        topic.client.send('PRIVMSG', from, '  :topic restore [log id] -- restores last topic (or optional id from the log list)');
-        topic.client.send('PRIVMSG', from, '  :topic replace [section id] [text] -- Replace a section of the current topic with new text');
-        topic.client.send('PRIVMSG', from, '  :topic set [delimiter] [text] -- Sets text as the topic, broken into sections delimited by a user specified delimiter or the default value of |');
-        topic.client.send('PRIVMSG', from, '  :topic delete [index] [count] -- Delete a section of the topic');
-        topic.client.send('PRIVMSG', from, '  :topic append [delimiter] [text] -- Append new sections to the topic');
-        topic.client.send('PRIVMSG', from, '  :topic prepend [delimiter] [text] -- Prepend new sections to the topic');
-        topic.client.send('PRIVMSG', from, '  :topic insert [index] [delimiter] [text] -- Create a new section at a specific location in the topic');
-
-        topic.client.send('PRIVMSG', from, '--end of response');
-},
+    
     delete: function(from, to, message)
     {
         message = message.split(" ");
@@ -349,6 +338,61 @@ help: function(from, to)
 
         topic.user = from;
         topic.client.send('TOPIC', '#wetfish', topic.build(sections));
+    },
+
+    help: function(from, to)
+    {
+            //init documentu sendy
+            topic.client.send('PRIVMSG', from, ':topic help! hi!');
+            topic.client.send('PRIVMSG', from, '  :topic log [count] -- pms a list of the last 3 topics, or user requested count');
+            topic.client.send('PRIVMSG', from, '  :topic restore [log id] -- restores last topic (or optional id from the log list)');
+            topic.client.send('PRIVMSG', from, '  :topic replace [section id] [text] -- Replace a section of the current topic with new text');
+            topic.client.send('PRIVMSG', from, '  :topic set [delimiter] [text] -- Sets text as the topic, broken into sections delimited by a user specified delimiter or the default value of |');
+            topic.client.send('PRIVMSG', from, '  :topic delete [index] [count] -- Delete a section of the topic');
+            topic.client.send('PRIVMSG', from, '  :topic append [delimiter] [text] -- Append new sections to the topic');
+            topic.client.send('PRIVMSG', from, '  :topic prepend [delimiter] [text] -- Prepend new sections to the topic');
+            topic.client.send('PRIVMSG', from, '  :topic insert [index] [delimiter] [text] -- Create a new section at a specific location in the topic');
+
+            topic.client.send('PRIVMSG', from, '--end of response');
+    },
+
+    // Function for converting topic logs from older formats
+    fix: function(from, to, message)
+    {
+        // Originally topics were stored in an array
+        if(Array.isArray(topic.list))
+        {
+            topic.client.say(from, "Fixing topic history...");
+
+            var fixed = {};
+
+            // Loop through array and build an object sorted by channel
+            for(var i = 0, l = topic.list.length; i < l; i++)
+            {
+                var old = topic.list[i];
+                var channel = old.channel;
+                delete old.channel;
+
+                if(fixed[channel] === undefined)
+                {
+                    fixed[channel] = [];
+                }
+
+                fixed[channel].push(old);
+            }
+
+            // Set version number
+            fixed.version = 1;
+
+            // Save fixed topic list
+            topic.list = fixed;
+
+            topic.client.say(from, "Topic history fixed!");
+        }
+        else if(topic.list.version == 1)
+        {
+            topic.client.say(from, "Nothing to fix!");
+        }
     },
 
     bind: function()
