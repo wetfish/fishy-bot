@@ -1,86 +1,115 @@
-var triplicates =
- {
-    MAX_REPS: 3,
-    client: false,
+var triplicates = {
     methods: ['message'],
-    storage: {},
-    kick_mode: {
+    client: false,
+    db: {},
+    config: {
         kick: true,
-        ban: false,
-        ban_timeout: 10 // Timeout in seconds
+        ban: true,
+        ban_notifications: true,
+        ban_min_time: 15,
+        ban_max_time: 3600,
+        ban_reset_time: 5400,
+        triplicate_reset_time: 30,
+        max_repetitions: 3,
+        ignore_names: ['Fiolina', 'fishy', 'Kitten', 'Neuromancer'],
+        ignore_hosts: []
     },
     
     message: function (from, to, message, details) {
-        var currentTime = new Date().getTime();
-        var userMessage = {
-            name: from,
-            to: to,
-            text: message.trim(),
-            timestamp: currentTime
-        };
-        
-        var previousMessages = [];
-        
-        if (details.host in triplicates.storage) {
-            previousMessages = triplicates.storage[details.host];
-        } else {
-            triplicates.storage[details.host] = previousMessages;
+        var uname = details.user + '@' + details.host;
+        if (triplicates.config.ignore_names.indexOf(from) > -1 || 
+            triplicates.config.ignore_hosts.indexOf(details.host) > -1) return; 
+        message = message.trim();
+        var user = triplicates.db[uname];
+        if (user == undefined) {
+            user = {
+                name: from,
+                channel: to,
+                repetitions: 1,
+                last_message: message,
+                times_banned: 0,
+                times_kicked: 0,
+                ban_timeout: null,
+                triplicate_timeout: null
+            };
+            triplicates.db[uname] = user;
+            return;
         }
-                
-        var kickUser = false;
-        var i = previousMessages.length;
-        while (i--) {
-            var currentMessage = previousMessages[i];
-            // Do a check to see if this message older than 10 seconds, if so discard it
-            if ((currentTime - currentMessage.timestamp) / 1000 > 10) {
-                previousMessages.splice(i, 1);
-                continue;
+        
+        if (user.last_message == message) {
+            user.repetitions++;
+            if (user.triplicate_timeout != null) {
+                clearTimeout(user.triplicate_timeout);
             }
+            user.triplicate_timeout = setTimeout(function () {
+                user.last_message = '';
+                user.repetitions = 1;
+            }, triplicates.config.triplicate_reset_time * 1000);
+        } else {
+            user.repetitions = 1;
         }
         
-        var messages = previousMessages.filter(function (m) {
-            return m.text == userMessage.text;
-        });
-        
-        if (messages.length == 0) {
-            previousMessages = [];
-        }
+        user.last_message = message;
 
-        if (messages.length >= triplicates.MAX_REPS - 1) {
-            if (triplicates.kick_mode.kick) {
+        if (user.repetitions >= triplicates.config.max_repetitions) {
+            // Oh, yay, we get to do something!
+            if (triplicates.config.ban) {
+                // Banning, w00t!
+                user.times_banned++;
+
+                var ban_time = triplicates.config.ban_min_time * user.times_banned;
+                if (ban_time > triplicates.config.ban_max_time) {
+                    ban_time = triplicates.config.ban_max_time;
+                }
+
+                // BANHAMMER
+                triplicates.client.send('MODE', to, '+b', uname);
+                setTimeout(function () {
+                    triplicates.client.send('MODE', to, '-b', uname);
+                }, ban_time * 1000);
+
+                // Do we notify the user?
+                if (triplicates.config.ban_notifications) {
+                    triplicates.client.say(from, 'You have been banned from ' + to + ' for ' + ban_time + ' seconds for violating the triplicates rule, you have been banned ' + 
+                        user.times_banned + ' time(s) due to triplicates in the last hour and a half. Your triplicates ban counter will reset to 0 in 1.5 hours if you do not violate the rule again.');
+                }
+
+                // Setup ban resets
+                if (user.ban_timeout != null) {
+                    clearTimeout(user.ban_timeout);
+                }
+
+                user.ban_timeout = setTimeout(function () {
+                    user.times_banned = 0;
+                    user.ban_timeout = null;
+                }, triplicates.config.ban_reset_time * 1000);
+            }
+            
+            if (triplicates.config.kick) {
                 triplicates.client.send('KICK', to, details.nick, 'You\'ve been kicked for violating the triplicates rule! :D');
             }
-            if (triplicates.kick_mode.ban) {
-                triplicates.client.send('MODE', to, '+b', details.prefix);
-                setTimeout(function () {
-                    triplicates.client.send('MODE', to, '-b', details.prefix);
-                }, triplicates.kick_mode.ban_timeout * 1000);
-            }
-            triplicates.storage[details.host] = [];
-        } else {
-            triplicates.storage[details.host] = previousMessages;
+
+            user.last_message = '';
+            user.repetitions = 1;
         }
-
-        previousMessages.push(userMessage);
+        triplicates.db[uname] = user;
 	},
-
+    
 	bind: function()
 	{
-		for(var i = 0, l = triplicates.methods.length; i < l; i++)
-		{
-			var method = triplicates.methods[i];
-			triplicates.client.addListener(method, triplicates[method]);
-		}
-	},
+        for (var i = 0, l = triplicates.methods.length; i < l; i++) {
+            var method = triplicates.methods[i];
+            triplicates.client.addListener(method, triplicates[method]);
+        }
+    },
 
 	unbind: function()
 	{
-		for(var i = 0, l = triplicates.methods.length; i < l; i++)
-		{
-			var method = triplicates.methods[i];
-			triplicates.client.removeListener(method, triplicates[method]);
-		}
-	}
+        for (var i = 0, l = triplicates.methods.length; i < l; i++) {
+            var method = triplicates.methods[i];
+            triplicates.client.removeListener(method, triplicates[method]);
+        }
+    }
 };
 
 module.exports =
