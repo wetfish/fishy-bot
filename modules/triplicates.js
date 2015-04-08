@@ -63,9 +63,9 @@ var triplicates = {
                 }
 
                 // BANHAMMER
-                triplicates.client.send('MODE', to, '+b', uname);
+                triplicates.client.send('MODE', to, '+b', '*!' + uname);
                 setTimeout(function () {
-                    triplicates.client.send('MODE', to, '-b', uname);
+                    triplicates.client.send('MODE', to, '-b', '*!' + uname);
                 }, ban_time * 1000);
 
                 // Do we notify the user?
