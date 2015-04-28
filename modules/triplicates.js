@@ -11,14 +11,19 @@ var triplicates = {
         ban_reset_time: 5400,
         triplicate_reset_time: 30,
         max_repetitions: 3,
-        ignore_names: ['Fiolina', 'fishy', 'Kitten', 'Neuromancer'],
+        channels: ['#wetfish'],
+        ignore_names: ['Fiolina', 'fishy', 'Kitten', 'Neuromancer', 'denice'],
         ignore_hosts: []
     },
     
     message: function (from, to, message, details) {
         var uname = details.user + '@' + details.host;
         if (triplicates.config.ignore_names.indexOf(from) > -1 || 
-            triplicates.config.ignore_hosts.indexOf(details.host) > -1) return; 
+            triplicates.config.ignore_hosts.indexOf(details.host) > -1) return;
+
+        // If there is a list of channels, make sure we're in it!
+        if(triplicates.config.channels.length && triplicates.config.channels.indexOf(to) == -1) return;
+        
         message = message.trim();
         var user = triplicates.db[uname];
         if (user == undefined) {
