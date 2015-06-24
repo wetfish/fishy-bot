@@ -134,10 +134,20 @@ var github =
     {
         hash = hash.split('=');
 
-        var calculated = crypto.createHmac(hash[0], github.core.secrets.github_key).update(JSON.stringify(payload)).digest('hex')
-        var comparison = compare(new Buffer(hash[1]), new Buffer(calculated));
+        // Loop through github keys
+        for(var i = 0, l = github.core.secrets.github_keys.length; i < l; i++)
+        {
+            var calculated = crypto.createHmac(hash[0], github.core.secrets.github_keys[i]).update(JSON.stringify(payload)).digest('hex')
+            var matched = compare(new Buffer(hash[1]), new Buffer(calculated));
 
-        return comparison;
+            if(matched)
+            {
+                return true;
+            }
+        }
+
+        // If nothing matched, return false
+        return false;
     },
 
     gollum: function(data)
@@ -186,7 +196,12 @@ var github =
         var author = data.commits[0].author.username;
         var authors = {};
 
-        if(data.commits.length == 1)
+        // If there are no commits, do nothing
+        if(!data.commits.length)
+        {
+            console.log("A push was made without any commits?");
+        }
+        else if(data.commits.length == 1)
         {
             page = data.commits[0].url;
             
