@@ -193,9 +193,6 @@ var github =
         var page = data.repository.html_url;
         var message;
         
-        var author = data.commits[0].author.username;
-        var authors = {};
-
         // If there are no commits, do nothing
         if(!data.commits.length)
         {
@@ -203,6 +200,7 @@ var github =
         }
         else if(data.commits.length == 1)
         {
+            var author = data.commits[0].author.username;
             page = data.commits[0].url;
             
             // Possible exploit: Could you put IRC control characters in the name of a project? xD
@@ -211,6 +209,8 @@ var github =
         }
         else
         {
+            var authors = {};
+            
             data.commits.forEach(function(commit)
             {
                 if(typeof authors[commit.author.username] == "undefined")
@@ -224,16 +224,16 @@ var github =
             if(authors.length > 1)
             {
                 var last = authors.pop();
-                author = authors.join(', ');
-                author += " & " + last;
+                authors = authors.join(', ');
+                authors += " & " + last;
             }
             else
             {
-                author = authors[0];
+                authors = authors[0];
             }
 
             var group = github.find_group(data.commits.length);
-            message = "[GitHub] A "+group+" commits were made by "+author+" in the "+name+" project. ( "+page+" )";
+            message = "[GitHub] A "+group+" commits were made by "+authors+" in the "+name+" project. ( "+page+" )";
         }
     
         github.client.say(github.channel, message);
