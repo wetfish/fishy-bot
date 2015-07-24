@@ -1,4 +1,4 @@
-/* Amiibo wishlist tracker
+/* METRONOME
  */
 var pg = require('pg');
 var crc32 = require('crc-32');
