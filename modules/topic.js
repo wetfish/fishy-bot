@@ -4,7 +4,7 @@ var topic =
 {
     // An object which lists topics by channel
     list: {version: 1},
-    actions: ['log', 'restore', 'replace', 'set', 'append', 'prepend', 'insert', 'delete', 'help'],
+    actions: ['log', 'restore', 'replace', 'set', 'swap', 'append', 'prepend', 'insert', 'delete', 'help'],
     client: false,
     core: false,
     user: false,
@@ -266,6 +266,39 @@ var topic =
         topic.client.send('TOPIC', channel, topic.build(sections));
     },
 
+    swap: function(from, channel, message)
+    {
+        // Make sure this command has a valid channel
+        if(channel.indexOf('#') != 0)
+        {
+            topic.client.say(from, "You must use :topic append in a channel, or use :topic append [channel].");
+            return;
+        }
+
+        if(typeof topic.list[channel] == "undefined")
+        {
+            topic.client.say(from, "No topic log exists for " + channel);
+            return;
+        }
+
+        message = message.split(" ");
+
+        var lastIndex = topic.list[channel].length - 1;
+        var last = topic.list[channel][lastIndex];
+        var sections = topic.parse(last.message);
+
+        var first = parseInt(message[0]) - 1;
+        var second = parseInt(message[1]) - 1;
+
+        var firstSection = sections[first];
+        var secondSection = sections[second];
+
+        sections[first] = secondSection;
+        sections[second] = firstSection;
+
+        topic.user = from;
+        topic.client.send('TOPIC', channel, topic.build(sections));
+    },
 
     append: function(from, channel, message)
     {
