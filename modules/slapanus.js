@@ -280,7 +280,7 @@ var anus =
 
     superslapbaka: function(from, to, message)
     {
-        var timeout = anus.waiting(0.5);
+        var timeout = anus.waiting(2);
         
         if(timeout)
         {

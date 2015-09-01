@@ -63,7 +63,7 @@ var butt =
     {
         var chance = new Buffer(crypto.randomBytes(1)).readUInt8(0);
         
-        if(chance > 249)
+        if(chance > 254)
         {
             message = butt.generate(message);
 
@@ -86,7 +86,7 @@ var butt =
     {
         var chance = new Buffer(crypto.randomBytes(1)).readUInt8(0);
         
-        if(chance > 249)
+        if(chance > 254)
         {
             message = butt.generate(message);
 

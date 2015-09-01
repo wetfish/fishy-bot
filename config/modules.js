@@ -1,1 +1,1 @@
-module.exports = ['admin', 'butt', 'github', 'slapanus', 'topic', 'poisonshits', 'ross'];
+module.exports = ['admin', 'butt', 'github', 'slapanus', 'topic', 'poisonshits', 'ross', 'triplicates'];
