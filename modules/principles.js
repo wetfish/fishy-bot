@@ -39,7 +39,9 @@ var burn =
         if(match)
         {
             var principle = match[1];
-            var data = burn.principles[principle];
+
+            // Subtract principle number by 1 because computers aren't people
+            var data = burn.principles[principle - 1];
 
             if(data)
             {
@@ -47,7 +49,7 @@ var burn =
             }
             else
             {
-                var random = crypto.randomBytes(1).readUInt8(0) % burn.principles.length;
+                var random = crypto.randomBytes(1).readUInt8(0) % burn.other.length;
                 data = burn.other[random];
 
                 client.say(to, "Principle #" + principle + " - " + data);
