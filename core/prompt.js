@@ -47,10 +47,14 @@ var prompt =
             return {type: 'modules', name: module[0]};
     },
 
-    // Send a message to wetfish
+    // Send a message
     say: function(message)
     {
-        prompt.client.say('#wetfish', message);
+        message = message.split(' ');
+        var destination = message.shift();
+        message = message.join(' ');
+        
+        prompt.client.say(destination, message);
     },
 
     // Send a CTCP message
