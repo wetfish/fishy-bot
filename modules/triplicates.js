@@ -1,8 +1,10 @@
-var triplicates = {
-    methods: ['message'],
+var triplicates =
+{
+    methods: ['message', 'action'],
     client: false,
     db: {},
-    config: {
+    config:
+    {
         kick: true,
         ban: true,
         ban_notifications: true,
@@ -15,8 +17,9 @@ var triplicates = {
         ignore_names: ['Fiolina', 'fishy', 'Kitten', 'Neuromancer', 'denice'],
         ignore_hosts: []
     },
-    
-    message: function (from, to, message, details) {
+
+    check: function (from, to, message, details)
+    {
         var uname = details.user + '@' + details.host;
         if (triplicates.config.ignore_names.indexOf(from) > -1 || 
             triplicates.config.ignore_hosts.indexOf(details.host) > -1) return;
@@ -98,36 +101,38 @@ var triplicates = {
             user.repetitions = 1;
         }
         triplicates.db[uname] = user;
-	},
+    },
     
-	bind: function()
-	{
-        for (var i = 0, l = triplicates.methods.length; i < l; i++) {
+    bind: function()
+    {
+        for (var i = 0, l = triplicates.methods.length; i < l; i++)
+        {
             var method = triplicates.methods[i];
-            triplicates.client.addListener(method, triplicates[method]);
+            triplicates.client.addListener(method, triplicates.check);
         }
     },
 
-	unbind: function()
-	{
-        for (var i = 0, l = triplicates.methods.length; i < l; i++) {
+    unbind: function()
+    {
+        for (var i = 0, l = triplicates.methods.length; i < l; i++)
+        {
             var method = triplicates.methods[i];
-            triplicates.client.removeListener(method, triplicates[method]);
+            triplicates.client.removeListener(method, triplicates.check);
         }
     }
 };
 
 module.exports =
 {
-	load: function(client)
-	{
-		triplicates.client = client;
-		triplicates.bind();
-	},
+    load: function(client)
+    {
+        triplicates.client = client;
+        triplicates.bind();
+    },
 
-	unload: function()
-	{
-		triplicates.unbind();
-		delete triplicates;
-	}
+    unload: function()
+    {
+        triplicates.unbind();
+        delete triplicates;
+    }
 }
