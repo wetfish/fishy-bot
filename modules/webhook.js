@@ -2,6 +2,7 @@
 var http = require('http');
 var crypto = require('crypto');
 var compare = require('buffer-equal-constant-time');
+var url = require('url');
 
 var webhook =
 {
@@ -9,21 +10,51 @@ var webhook =
     client: false,
     server: false,
     port: 12345,
-    channel: '#wetfish',
+    commands: ['message', 'action'],
 
+    // Initialize the webserver
     init: function()
     {
         webhook.server = http.createServer(webhook.handler).listen(webhook.port);
     },
 
+    // Function to handle incoming web requests
     handler: function(request, response)
     {
-        console.log(request);
+        var parsed = url.parse(request.url, true)
+        var data = parsed.query;
+        var verified = webhook.verify(data.hash, data.payload);
+
+        if(verified)
+        {
+            // Check if the payload contains JSON
+            try
+            {
+                var payload = JSON.parse(data.payload);
+            }
+            catch(error)
+            {
+                var payload = {};
+            }
+
+            // If the payload contains a valid command
+            if(webhook.commands.indexOf(payload.command) > -1)
+            {
+                webhook[payload.command](payload.data);
+            }
+        }
+        else
+        {
+            console.log("!! Unverified data !!", data);
+        }
+        
         response.end();
     },
 
+    // Function to verify requests against a list of pre-shared secrets
     verify: function(hash, payload)
     {
+        if(!hash) return false;
         hash = hash.split('=');
 
         // Loop through webhook keys
@@ -40,7 +71,19 @@ var webhook =
 
         // If nothing matched, return false
         return false;
-    }
+    },
+
+    // Function to send a message to a channel or user
+    message: function(data)
+    {
+        console.log(data);
+    },
+
+    // Function to send an action to a channel or user
+    action: function(data)
+    {
+        console.log(data);
+    },
 };
 
 
@@ -69,7 +112,8 @@ module.exports =
         delete http;
         delete crypto;
         delete compare;
-        
+        delete url;
+
         // Delete defined variables
         delete webhook;
     },
