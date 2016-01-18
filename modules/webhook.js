@@ -60,9 +60,17 @@ var webhook =
         // Loop through webhook keys
         for(var i = 0, l = webhook.core.secrets.webhook_keys.length; i < l; i++)
         {
-            var calculated = crypto.createHmac(hash[0], webhook.core.secrets.webhook_keys[i]).update(JSON.stringify(payload)).digest('hex')
-            var matched = compare(new Buffer(hash[1]), new Buffer(calculated));
-
+            try
+            {
+                var calculated = crypto.createHmac(hash[0], webhook.core.secrets.webhook_keys[i]).update(payload).digest('hex')
+                var matched = compare(new Buffer(hash[1]), new Buffer(calculated));
+            }
+            catch(error)
+            {
+                console.log("There was an error creating the HMAC!");
+                console.log(error);
+            }
+            
             if(matched)
             {
                 return true;
