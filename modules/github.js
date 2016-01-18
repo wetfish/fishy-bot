@@ -134,10 +134,10 @@ var github =
     {
         hash = hash.split('=');
 
-        // Loop through github keys
-        for(var i = 0, l = github.core.secrets.github_keys.length; i < l; i++)
+        // Loop through github webhook keys
+        for(var i = 0, l = github.core.secrets.webhook_keys.length; i < l; i++)
         {
-            var calculated = crypto.createHmac(hash[0], github.core.secrets.github_keys[i]).update(JSON.stringify(payload)).digest('hex')
+            var calculated = crypto.createHmac(hash[0], github.core.secrets.webhook_keys[i]).update(JSON.stringify(payload)).digest('hex')
             var matched = compare(new Buffer(hash[1]), new Buffer(calculated));
 
             if(matched)
