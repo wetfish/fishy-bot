@@ -84,16 +84,17 @@ var webhook =
     // Function to send a message to a channel or user
     message: function(data)
     {
-        console.log(data);
+        console.log("Recieved webhook:", data);
+        webhook.client.say(data.channel, data.text);
     },
 
     // Function to send an action to a channel or user
     action: function(data)
     {
-        console.log(data);
+        console.log("Recieved webhook:", data);
+        webhook.client.action(data.channel, data.text);
     },
 };
-
 
 module.exports =
 {
