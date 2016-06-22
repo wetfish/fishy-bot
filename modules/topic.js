@@ -4,7 +4,7 @@ var topic =
 {
     // An object which lists topics by channel
     list: {version: 1},
-    actions: ['log', 'restore', 'replace', 'set', 'swap', 'append', 'prepend', 'insert', 'delete', 'help'],
+    actions: ['log', 'restore', 'revert', 'replace', 'set', 'swap', 'append', 'prepend', 'insert', 'delete', 'help'],
     client: false,
     core: false,
     user: false,
@@ -196,6 +196,11 @@ var topic =
 
         topic.user = from;
         topic.client.send('TOPIC', channel, topic.list[channel][index].message);
+    },
+
+    revert: function(from, channel, message) 
+    {
+        topic.restore(from, channel, message);
     },
 
     replace: function(from, channel, message)
