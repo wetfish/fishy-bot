@@ -2,11 +2,12 @@
  * Use the toilet command to generate rainbow text!
  */
 
+var spawn = require('child_process').spawn;
 var rainbow =
 {
     client: false,
     methods: ['message'],
-    commands: ['rainbow', 'bigrainbow', 'biggerrainbow'],
+    commands: ['rainbow', 'bigrainbow', 'biggerrainbow', 'metalrainbow'],
 
     // This really should be a core function or something
     reply: function(type, from, to, message)
@@ -43,19 +44,54 @@ var rainbow =
         }
     },
 
+    toilet: function(from, to, options, message)
+    {
+        var toilet = spawn('toilet', options);
+        toilet.stdin.write(message);
+        toilet.stdin.end();
+
+        toilet.stdout.on('data', function(output)
+        {
+            rainbow.reply('say', from, to, output);
+        });
+    },
+
     rainbow: function(from, to, message, details)
     {
-        rainbow.reply('say', from, to, 'coming soon ™');
+        rainbow.toilet(from, to, ['--gay', '--irc', '--font', 'term'], message);
     },
 
     bigrainbow: function(from, to, message, details)
     {
-        rainbow.reply('say', from, to, 'coming soon ™');
+        if(message.length > 256)
+        {
+            rainbow.reply('say', from, to, 'nah bro');
+            return;
+        }
+
+        rainbow.toilet(from, to, ['--gay', '--irc', '--font', 'future'], message);
     },
 
     biggerrainbow: function(from, to, message, details)
     {
-        rainbow.reply('say', from, to, 'coming soon ™');
+        if(message.length > 128)
+        {
+            rainbow.reply('say', from, to, 'nah bro');
+            return;
+        }
+
+        rainbow.toilet(from, to, ['--gay', '--irc', '--font', 'mono9'], message);
+    },
+
+    metalrainbow: function(from, to, message, details)
+    {
+        if(message.length > 128)
+        {
+            rainbow.reply('say', from, to, 'nah bro');
+            return;
+        }
+
+        rainbow.toilet(from, to, ['--metal', '--irc', '--font', 'mono9'], message);
     },
 
     bind: function()
@@ -81,5 +117,6 @@ module.exports =
     {
         rainbow.unbind();
         delete rainbow;
+        delete spawn;
     }
 }
