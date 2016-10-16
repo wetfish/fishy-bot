@@ -25,6 +25,7 @@ var helper =
         }
     },
 
+    // Function which intelligently replies to messages sent via PM and in channels
     reply: function(type, from, to, message)
     {
         // If this is a channel message
@@ -35,10 +36,26 @@ var helper =
         }
         else
         {
-            rainbow.client[type](from, message);
+            core.client[type](from, message);
             console.log("["+from+"] <"+config.name+"> "+message);
         }
     },
+
+    // Function to parse a message for potential commands
+    parseCommand: function(prefix, message)
+    {
+        // Check for the prefix
+        if(message.charAt(0) == prefix)
+        {
+            message = message.substr(1);
+            message = message.split(' ');
+
+            var command = message.shift().toString().toLowerCase();
+            return {'command': command, 'message': message};
+        }
+
+        return false;
+    }
 };
 
 module.exports =

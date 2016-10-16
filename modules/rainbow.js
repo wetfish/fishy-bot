@@ -6,7 +6,6 @@ var spawn = require('child_process').spawn;
 var rainbow =
 {
     client: false,
-    methods: ['message'],
     commands: ['rainbow', 'bigrainbow', 'biggerrainbow', 'metalrainbow'],
     timeout: {},
 
