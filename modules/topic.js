@@ -462,9 +462,11 @@ var topic =
         var length = parseInt(message[1]);
 
         // Can't delete something that doesn't exist
-        if(!index || index < 1 || index + 1 > sections.length)
-            topic.client.send('PRIVMSG', channel, ' :Don\'t be a fucking idiot ' + from);
+        if(index + 1 > sections.length)
+        {
+            topic.client.say(from, "You tried to delete a section that doesn't exist. There are only " + sections.length + " topic sections in " + channel);
             return;
+        }
 
         if(!length || length < 1)
             length = 1;
