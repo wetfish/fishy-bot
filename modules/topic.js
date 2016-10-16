@@ -463,6 +463,7 @@ var topic =
 
         // Can't delete something that doesn't exist
         if(!index || index < 1 || index + 1 > sections.length)
+            topic.client.send('PRIVMSG', channel, ' :Don\'t be a fucking idiot ' + from);
             return;
 
         if(!length || length < 1)
