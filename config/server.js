@@ -4,6 +4,6 @@ module.exports = {
     secure: true,
     name: 'fishy',
     userName: 'fishybot',
-    realName: 'Source available via http://github.com/wetfish/fishy',
-    channels: ['#wetfish', '#duel', '#ross']
+    realName: 'Source available via https://github.com/itsrachelfish/fishy-bot',
+    channels: ['#wetfish', '#botspam', '#ross']
 };
