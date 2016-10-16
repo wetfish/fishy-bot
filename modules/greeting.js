@@ -5,7 +5,6 @@
 var core;
 var greeting =
 {
-    client: false,
     methods: ['message', 'join'],
 
     message: function(from, to, message, details)
