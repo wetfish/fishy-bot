@@ -1,1 +1,1 @@
-module.exports = ['auth', 'admin', 'butt', 'github', 'slapanus', 'topic', 'poisonshits', 'ross', 'triplicates', 'principles', 'webhook', 'rainbow', 'greeting', 'quote'];
+module.exports = ['auth', 'admin', 'butt', 'github', 'slapanus', 'topic', 'poisonshits', 'triplicates', 'principles', 'webhook', 'rainbow', 'greeting', 'quote'];

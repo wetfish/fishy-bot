@@ -51,6 +51,8 @@ var helper =
             message = message.split(' ');
 
             var command = message.shift().toString().toLowerCase();
+            message = message.join(' ');
+
             return {'command': command, 'message': message};
         }
 
