@@ -25,12 +25,12 @@ var quote =
 
                 // Check the first chunk for a matching quote function
                 var option = parsed.chunks.shift();
+                var remaining = parsed.chunks.join(' ');
 
                 if(quote.functions.indexOf(option) > -1)
                 {
-                    // Pass the remaining message data to the quote function
-                    var argument = parsed.chunks.join(' ');
-                    quote[option](argument, source);
+                    // Pass the remaining message data to the matched quote function
+                    quote[option](remaining, source);
                 }
 
                 // Check if the user is searching for a specific quote ID
@@ -42,7 +42,7 @@ var quote =
                 // Otherwise, this must be a quote search
                 else
                 {
-                    quote.random({'search': option}, source);
+                    quote.random({'search': remaining}, source);
                 }
             }
         }
