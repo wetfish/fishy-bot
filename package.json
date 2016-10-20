@@ -20,7 +20,8 @@
     "irc": "0.3.7",
     "github": "~5.2.2",
     "buffer-equal-constant-time": "~1.0.1",
-    "mysql": "~2.11.1"
+    "mysql": "~2.11.1",
+    "extend": "~3.0.0"
   },
   "license": "GPL"
 }

@@ -48,12 +48,11 @@ var helper =
         if(message.charAt(0) == prefix)
         {
             message = message.substr(1);
-            message = message.split(' ');
+            var chunks = message.split(' ');
+            var command = chunks.shift().toString().toLowerCase();
+            message = chunks.join(' ');
 
-            var command = message.shift().toString().toLowerCase();
-            message = message.join(' ');
-
-            return {'command': command, 'message': message};
+            return {'command': command, 'message': message, 'chunks': chunks};
         }
 
         return false;
