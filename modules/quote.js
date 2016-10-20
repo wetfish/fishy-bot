@@ -42,7 +42,7 @@ var quote =
                 // Otherwise, this must be a quote search
                 else
                 {
-                    quote.random({'search': remaining}, source);
+                    quote.random({'search': option + ' ' + remaining}, source);
                 }
             }
         }
