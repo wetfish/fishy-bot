@@ -115,7 +115,18 @@ var quote =
     // Get the latest quote
     latest: function(id, source)
     {
-        core.helper.reply('say', source.from, source.to, "this feature is coming soon ™");
+        model.connection.query('Select * from `quotes` order by `id` desc limit 0,1', function(error, response)
+        {
+            // Make sure there wasn't an error
+            if(!error && response.length)
+            {
+                quote.output(response[0], source);
+            }
+            else
+            {
+                core.helper.reply('say', source.from, source.to, "something bad happened");
+            }
+        });
     },
 
     // Allows admins to delete a quote
@@ -170,7 +181,7 @@ var quote =
             where = 'where ' + where.join (' and ');
         }
 
-        model.connection.query('Select * from `quotes` ' + where + 'order by rand()', function(error, response)
+        model.connection.query('Select * from `quotes` ' + where + 'order by rand() limit 0,1', function(error, response)
         {
             // Make sure there wasn't an error
             if(!error && response.length)
