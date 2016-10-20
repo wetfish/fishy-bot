@@ -103,7 +103,14 @@ var quote =
             // Make sure there wasn't an error
             if(!error && response.length)
             {
-                core.helper.reply('say', source.from, source.to, "you can blame \x02" + response[0].created_by + "\x02 for that one");
+                if(response[0].created_by)
+                {
+                    core.helper.reply('say', source.from, source.to, "you can blame \x02" + response[0].created_by + "\x02 for that one");
+                }
+                else
+                {
+                    core.helper.reply('say', source.from, source.to, "not sure who to blame for that one");
+                }
             }
             else
             {
@@ -167,6 +174,12 @@ var quote =
 
         if(options.search)
         {
+            // Add wildcards to the search if none were provided
+            if(options.search.indexOf('*') == -1)
+            {
+                options.search = '*' + options.search + '*';
+            }
+
             // Excape the search phrase and convert "*" into mysql wildcards
             where.push('`quote` like ' + model.connection.escape(options.search.replace(/\*/g, '%')));
         }
