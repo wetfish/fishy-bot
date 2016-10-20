@@ -152,17 +152,17 @@ var quote =
             'score': 0
         };
 
-        extend(options, defaults);
+        options = extend(defaults, options);
 
         if(options.search)
         {
             // Excape the search phrase and convert "*" into mysql wildcards
-            where.push('`quote` like ' + model.mysql.escape(options.search.replace(/\*/g, '%')));
+            where.push('`quote` like ' + model.connection.escape(options.search.replace(/\*/g, '%')));
         }
 
         if(options.score)
         {
-            where.push('`score` >= ' + model.mysql.escape(options.score));
+            where.push('`score` >= ' + model.connection.escape(options.score));
         }
 
         if(where.length)
