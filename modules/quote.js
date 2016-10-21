@@ -42,7 +42,7 @@ var quote =
                 // Otherwise, this must be a quote search
                 else
                 {
-                    quote.random({'search': option + ' ' + remaining}, source);
+                    quote.random({'search': parsed.message}, source);
                 }
             }
         }
@@ -81,7 +81,7 @@ var quote =
         // Remove any non-numeric characters
         id = id.replace(/[^0-9]/g, '');
 
-        model.connection.query('Select * from `quotes` where `id` = ?', id, function(error, response)
+        model.connection.query('Select * from `quotes` where `id` = ? and `deleted_at` is null', id, function(error, response)
         {
             // Make sure there wasn't an error
             if(!error && response.length)
@@ -98,7 +98,7 @@ var quote =
     // Display who added this quote to the database
     blame: function(id, source)
     {
-        model.connection.query('Select `created_by` from `quotes` where `id` = ?', id, function(error, response)
+        model.connection.query('Select `created_by` from `quotes` where `id` = ? and `deleted_at` is null', id, function(error, response)
         {
             // Make sure there wasn't an error
             if(!error && response.length)
@@ -122,7 +122,7 @@ var quote =
     // Get the latest quote
     latest: function(id, source)
     {
-        model.connection.query('Select * from `quotes` order by `id` desc limit 0,1', function(error, response)
+        model.connection.query('Select * from `quotes` where `deleted_at` is null order by `id` desc limit 0,1', function(error, response)
         {
             // Make sure there wasn't an error
             if(!error && response.length)
@@ -139,7 +139,24 @@ var quote =
     // Allows admins to delete a quote
     delete: function(id, source)
     {
-        core.helper.reply('say', source.from, source.to, "this feature is coming soon ™");
+        if(core.isAdmin(source.details))
+        {
+            // Remove any non-numeric characters
+            id = parseInt(id.replace(/[^0-9]/g, ''));
+
+            if(isNaN(id))
+            {
+                core.helper.reply('say', source.from, source.to, "you must specify the ID of the quote to be deleted");
+                return;
+            }
+
+            model.connection.query('Update `quotes` set `deleted_at` = now() where `id` = ?', id);
+            core.helper.reply('say', source.from, source.to, "quote deleted!");
+        }
+        else
+        {
+            core.helper.reply('say', source.from, source.to, "only admins can delete quotes, use !quote dislike instead");
+        }
     },
 
     // Increase the score of a quote
@@ -163,7 +180,7 @@ var quote =
     // Display a random quote
     random: function(options, source)
     {
-        var where = [];
+        var where = ['`deleted_at` is null'];
         var defaults =
         {
             'search': false,
@@ -174,6 +191,8 @@ var quote =
 
         if(options.search)
         {
+            options.search = options.search.trim();
+
             // Add wildcards to the search if none were provided
             if(options.search.indexOf('*') == -1)
             {
