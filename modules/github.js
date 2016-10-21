@@ -3,6 +3,7 @@ var http = require('http');
 var querystring = require('querystring');
 var crypto = require('crypto');
 var compare = require('buffer-equal-constant-time');
+var config = require('../config/secret.js');
 
 function processPost(request, response, callback) {
     var queryData = "";
@@ -135,9 +136,9 @@ var github =
         hash = hash.split('=');
 
         // Loop through github webhook keys
-        for(var i = 0, l = github.core.secrets.webhook_keys.length; i < l; i++)
+        for(var i = 0, l = config.webhook_keys.length; i < l; i++)
         {
-            var calculated = crypto.createHmac(hash[0], github.core.secrets.webhook_keys[i]).update(JSON.stringify(payload)).digest('hex')
+            var calculated = crypto.createHmac(hash[0], config.webhook_keys[i]).update(JSON.stringify(payload)).digest('hex')
             var matched = compare(new Buffer(hash[1]), new Buffer(calculated));
 
             if(matched)
