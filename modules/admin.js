@@ -30,10 +30,7 @@ var admin =
 
     message: function(from, to, message, details)
     {
-        var userhost = details.nick + '@' + details.host;
-
-        // If this user appears in the admin list
-        if(admin.list.indexOf(userhost) > -1)
+        if(admin.isAdmin(details))
         {
             // Admin commands are prefixed with :
             if(message.charAt(0) == ":")
@@ -109,6 +106,19 @@ var admin =
         require('process').exit();
     },
 
+    isAdmin: function(details)
+    {
+        var userhost = details.nick + '@' + details.host;
+
+        // If this user appears in the admin list
+        if(admin.list.indexOf(userhost) > -1)
+        {
+            return true;
+        }
+
+        return false;
+    },
+
     bind: function()
     {
         admin.client.addListener('message', admin.message);
@@ -126,12 +136,13 @@ module.exports =
     {
         admin.client = client;
         admin.core = core;
+        admin.core.isAdmin = admin.isAdmin;
         admin.bind();
     },
 
     unload: function()
     {
         admin.unbind();
-        delete admin;
+        delete admin.core.isAdmin;
     },
 }
