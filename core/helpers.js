@@ -3,8 +3,13 @@
 var core;
 var config = require("../config/server.js");
 
+// Object to maintain the registration status of users
+var registered = {};
+
 var helper =
 {
+    events: ['raw'],
+
     // Bind client events to the matching function names in the passed object
     bind: function(events, object)
     {
@@ -56,7 +61,37 @@ var helper =
         }
 
         return false;
-    }
+    },
+
+    // Helper function to check if a user is registered
+    isRegistered: function(user, callback)
+    {
+        // Remove this user from the registered object in case they've been deauthed
+        delete registered[user];
+
+        // Now make sure this user is still logged in
+        core.client.whois(user, function()
+        {
+            if(registered[user])
+            {
+                callback(true);
+            }
+            else
+            {
+                callback(false);
+            }
+        });
+    },
+
+    // Function for parsing raw data from the IRC server, used for checking if a user is registered or not
+    raw: function(data)
+    {
+        if(data.rawCommand == 307)
+        {
+            var user = data.args[1];
+            registered[user] = true;
+        }
+    },
 };
 
 module.exports =
@@ -65,10 +100,12 @@ module.exports =
     {
         core = _core;
         core.helper = helper;
+        helper.bind(helper.events, helper);
     },
 
     unload: function()
     {
         delete core.helper;
+        helper.unbind(helper.events, helper);
     }
 };
