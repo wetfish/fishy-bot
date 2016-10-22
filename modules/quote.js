@@ -9,7 +9,7 @@ var extend = require('extend');
 var quote =
 {
     events: ['message'],
-    functions: ['add', 'blame', 'latest', 'delete', 'like', 'dislike', 'popular'],
+    functions: ['add', 'blame', 'latest', 'delete', 'like', 'dislike', 'meh', 'popular'],
 
     message: function(from, to, message, details)
     {
@@ -207,6 +207,23 @@ var quote =
             {
                 quote.vote(id, source, -1);
                 core.helper.reply('say', source.from, source.to, "that quote SUCKS!");
+            }
+            else
+            {
+                core.helper.reply('say', source.from, source.to, "you must be registered to use this command");
+            }
+        });
+    },
+
+    // Reset your vote back to 0
+    meh: function(id, source)
+    {
+        core.helper.isRegistered(source.from, function(registered)
+        {
+            if(registered)
+            {
+                quote.vote(id, source, 0);
+                core.helper.reply('say', source.from, source.to, "meh, whatever");
             }
             else
             {
