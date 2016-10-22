@@ -150,7 +150,7 @@ var quote =
                 return;
             }
 
-            model.connection.query('Update `quotes` set `deleted_at` = now() where `id` = ?', id);
+            model.connection.query('Update `quotes` set `deleted_at` = now(), `updated_at` = now() where `id` = ?', id);
             core.helper.reply('say', source.from, source.to, "quote deleted!");
         }
         else
@@ -159,16 +159,60 @@ var quote =
         }
     },
 
+    vote: function(id, source, score)
+    {
+        // Save this user's vote
+        model.connection.query("Insert into `votes` (quote_id, voter, vote) values (?, ?, ?) on duplicate key update `vote` = ?, `updated_at` = now()", [id, source.from, score, score], function(error, response)
+        {
+            console.log(error, response);
+            if(!error)
+            {
+                // Get thet total number of votes for this quote
+                model.connection.query("Select sum(vote) as score from `votes` where `quote_id` = ?", [id], function(error, response)
+                {
+                    console.log(error, response);
+                    // Save a cache of the total in the quotes table
+                    if(!error)
+                    {
+                        model.connection.query("Update `quotes` set `score` = ?, `updated_at` = now() where `id` = ?", [response[0].score, id]);
+                    }
+                });
+            }
+        });
+    },
+
     // Increase the score of a quote
     like: function(id, source)
     {
-        core.helper.reply('say', source.from, source.to, "this feature is coming soon ™");
+        core.helper.isRegistered(source.from, function(registered)
+        {
+            if(registered)
+            {
+                quote.vote(id, source, 1);
+                core.helper.reply('say', source.from, source.to, "that's a good quote!");
+            }
+            else
+            {
+                core.helper.reply('say', source.from, source.to, "you must be registered to use this command");
+            }
+        });
     },
 
     // Reduce the score of a quote
     dislike: function(id, source)
     {
-        core.helper.reply('say', source.from, source.to, "this feature is coming soon ™");
+        core.helper.isRegistered(source.from, function(registered)
+        {
+            if(registered)
+            {
+                quote.vote(id, source, -1);
+                core.helper.reply('say', source.from, source.to, "that quote SUCKS!");
+            }
+            else
+            {
+                core.helper.reply('say', source.from, source.to, "you must be registered to use this command");
+            }
+        });
     },
 
     // Display a random quote with a score above 5
@@ -213,7 +257,7 @@ var quote =
             where = 'where ' + where.join (' and ');
         }
 
-        model.connection.query('Select * from `quotes` ' + where + 'order by rand() limit 0,1', function(error, response)
+        model.connection.query('Select * from `quotes` ' + where + ' order by rand() limit 0,1', function(error, response)
         {
             // Make sure there wasn't an error
             if(!error && response.length)
