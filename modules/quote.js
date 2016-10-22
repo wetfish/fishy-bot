@@ -56,7 +56,23 @@ var quote =
             return ' @ ' + minutes;
         });
 
-        core.helper.reply('say', source.from, source.to, "[\x02#" + data.id + "\x02] [\x02" + date + "\x02] " + data.quote);
+        var score = '';
+
+        if(data.score != 0)
+        {
+            if(data.score > 0)
+            {
+                // Green text for good quotes
+                score = "[3Score: " + data.score + "] ";
+            }
+            else
+            {
+                // Red tet for bad quotes
+                score = "[4Score: " + data.score + "] ";
+            }
+        }
+
+        core.helper.reply('say', source.from, source.to, "[#" + data.id + "] [" + date + "] " + score + data.quote);
     },
 
     // Add a quote to the database
@@ -105,7 +121,7 @@ var quote =
             {
                 if(response[0].created_by)
                 {
-                    core.helper.reply('say', source.from, source.to, "you can blame \x02" + response[0].created_by + "\x02 for that one");
+                    core.helper.reply('say', source.from, source.to, "you can blame " + response[0].created_by + " for that one");
                 }
                 else
                 {
@@ -164,13 +180,11 @@ var quote =
         // Save this user's vote
         model.connection.query("Insert into `votes` (quote_id, voter, vote) values (?, ?, ?) on duplicate key update `vote` = ?, `updated_at` = now()", [id, source.from, score, score], function(error, response)
         {
-            console.log(error, response);
             if(!error)
             {
                 // Get thet total number of votes for this quote
                 model.connection.query("Select sum(vote) as score from `votes` where `quote_id` = ?", [id], function(error, response)
                 {
-                    console.log(error, response);
                     // Save a cache of the total in the quotes table
                     if(!error)
                     {
