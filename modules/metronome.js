@@ -2,7 +2,8 @@
  */
 var pg = require('pg');
 var crc32 = require('crc-32');
-var conString = "postgres://username:password@localhost/database"
+var config = require('../config/secret.js');
+var conString = "postgres://" + config.postgres.user + ":" + config.postgres.password + "@" + config.postgres.host + "/" + config.postgres.database;
 var metronome = 
 {
     client: false,
