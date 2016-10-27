@@ -28,7 +28,7 @@ var metronome =
             
             if(command == "metronome") 
             {
-                var timeout = metronome.waiting(1, details.host, 5);
+                var timeout = metronome.waiting(1, details.host, 1);
 
                 if(timeout)
                 {
