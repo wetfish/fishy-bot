@@ -49,9 +49,9 @@ var metronome =
                 var from_crc = crc32.str(from)>>>0;
                 var target_crc = crc32.str(target)>>>0;
                 var from_pogeydex = (from_crc % 721) + 1;
-                console.log(from_pogeydex);
+                //console.log(from_pogeydex);
                 var target_pogeydex = (target_crc % 721) + 1;
-                console.log(target_pogeydex);
+                //console.log(target_pogeydex);
                 var client = new pg.Client(conString);
                 client.connect(function(err) 
                 {
