@@ -72,7 +72,8 @@ var rainbow =
 
         toilet.stdout.on('data', function(output)
         {
-            rainbow.reply('say', from, to, output);
+            // Replace regular spaces with a unicode space so things look good in the webchat
+            rainbow.reply('say', from, to, String(output).replace(/ /g, ' '));
         });
     },
 
