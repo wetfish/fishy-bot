@@ -44,8 +44,14 @@ var rainbow =
         }
     },
 
-    checkTimeout: function(host)
+    checkTimeout: function(to, host)
     {
+        // Disable timeouts in botspam
+        if(to == '#botspam')
+        {
+            return;
+        }
+
         if(rainbow.timeout[host])
         {
             var timeout = (rainbow.timeout[host].getTime() - new Date().getTime()) / 1000;
@@ -79,7 +85,7 @@ var rainbow =
 
     rainbow: function(from, to, message, details)
     {
-        if(rainbow.checkTimeout(details.host))
+        if(rainbow.checkTimeout(to, details.host))
         {
             rainbow.reply('say', from, to, 'nah bro');
             return;
@@ -91,7 +97,7 @@ var rainbow =
 
     bigrainbow: function(from, to, message, details)
     {
-        if(message.length > 256 || rainbow.checkTimeout(details.host))
+        if(message.length > 256 || rainbow.checkTimeout(to, details.host))
         {
             rainbow.reply('say', from, to, 'nah bro');
             return;
@@ -103,7 +109,7 @@ var rainbow =
 
     biggerrainbow: function(from, to, message, details)
     {
-        if(message.length > 128 || rainbow.checkTimeout(details.host))
+        if(message.length > 128 || rainbow.checkTimeout(to, details.host))
         {
             rainbow.reply('say', from, to, 'nah bro');
             return;
@@ -115,7 +121,7 @@ var rainbow =
 
     metalrainbow: function(from, to, message, details)
     {
-        if(message.length > 128 || rainbow.checkTimeout(details.host))
+        if(message.length > 128 || rainbow.checkTimeout(to, details.host))
         {
             rainbow.reply('say', from, to, 'nah bro');
             return;
