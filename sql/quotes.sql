@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS `quotes`;
 CREATE TABLE `quotes` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `quote` varchar(512) NOT NULL,
-    `score` int(11) NOT NULL,
+    `score` int(11) NOT NULL DEFAULT 0,
     `created_by` varchar(64) NULL DEFAULT NULL,
     `created_at` timestamp NOT NULL DEFAULT NOW(),
     `updated_at` timestamp NOT NULL DEFAULT NOW(),

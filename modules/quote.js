@@ -273,7 +273,7 @@ var quote =
     // Display a random quote with a score above 5
     popular: function(options, source)
     {
-        quote.random({'score': 5}, source);
+        quote.random({'score': 2}, source);
     },
 
     // Display a random quote
