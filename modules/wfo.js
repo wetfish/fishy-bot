@@ -46,7 +46,7 @@ State.prototype.newItems = function(items, announce_fn) {
 
         if (need_announce.length >= this.LIMIT) {
 
-            announce_fn(util.format("9[WFO] At least 9%d posts were made in the last %d minutes! Join the action at 9https://wetfishonline.com/",
+            announce_fn(util.format("9[WFO] At least9 %d posts were made in the last %d minutes! Join the action at 9https://wetfishonline.com/",
                                     need_announce.length,
                                     this.TIMEOUT / 60 / 1000));
 
