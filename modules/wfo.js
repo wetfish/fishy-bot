@@ -6,7 +6,8 @@ var FeedParser = require('feedparser');
 var request = require('request');
 
 ////////////////////////////////////////////////////////////////////////////////
-function State() {
+function State()
+{
     this.STATE_NOTREADY = 0; // Before we have seen_guids, so we don't know what msgs are new.
     this.STATE_NORMAL = 1;   // We're active.
 
@@ -16,56 +17,67 @@ function State() {
     this.seen_guids = []; // TODO: Clean up old items.
     this.current_state = this.STATE_NOTREADY;
 }
-State.prototype.getCurrentTimeout = function() {
-    if (this.current_state == this.STATE_NOTREADY) {
+
+State.prototype.getCurrentTimeout = function()
+{
+    if(this.current_state == this.STATE_NOTREADY)
+    {
         return 10000; // This is used when there's an error before we're ready.
-    } else if (this.current_state == this.STATE_NORMAL) {
+    }
+    else if(this.current_state == this.STATE_NORMAL)
+    {
         return this.TIMEOUT;
     }
-    console.log('getCurrentTimeout error');
 }
-State.prototype.newItems = function(items, announce_fn) {
 
+State.prototype.newItems = function(items)
+{
     var need_announce = [];
+    var output;
 
     // my nodejs isn't ES6 yet so i can't use the fat arrow function
     // defn.
     var thisstate = this;
 
-    items.forEach(function (item) {
-        if (thisstate.seen_guids.indexOf(item.guid) == -1) {
+    items.forEach(function (item)
+    {
+        if(thisstate.seen_guids.indexOf(item.guid) == -1)
+        {
             need_announce.push(item);
             thisstate.seen_guids.push(item.guid);
         }
     });
 
-    if (this.current_state == this.STATE_NORMAL) {
+    if(this.current_state == this.STATE_NORMAL)
+    {
         // feed gives newest entries first, but we should
         // announce oldest first.
         need_announce.reverse();
 
-        if (need_announce.length >= this.LIMIT) {
-
-            announce_fn(util.format("9[WFO] At least9 %d posts were made in the last %d minutes! Join the action at 9https://wetfishonline.com/",
-                                    need_announce.length,
-                                    this.TIMEOUT / 60 / 1000));
-
-        } else if (need_announce.length > 0) {
-            for (var i in need_announce) {
+        if(need_announce.length >= this.LIMIT)
+        {
+            var message = "9[WFO] Woah dude. 9 %d posts were made in the last %d minutes! Join the action at 9https://wetfishonline.com/";
+            output = util.format(message, need_announce.length, this.TIMEOUT / 60 / 1000);
+        }
+        else if(need_announce.length > 0)
+        {
+            for (var i in need_announce)
+            {
                 var item = need_announce[i];
-                announce_fn(util.format("9[WFO] %s 9posted %s 9at %s",
-                                        item.author,
-                                        item.title,
-                                        item.guid));
+                var message = "9[WFO] %s 9posted %s 9at %s";
+                output = util.format(message, item.author, item.title, item.guid);
             }
         }
     }
 
     // We populated seen_guids, so now we're ready.
-    if (this.current_state == this.STATE_NOTREADY) {
+    if(this.current_state == this.STATE_NOTREADY)
+    {
         console.log('WFO entering STATE_NORMAL');
         this.current_state = this.STATE_NORMAL;
     }
+
+    return output;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -84,38 +96,52 @@ var wfo =
         wfo.buffer = [];
 
         var feedparser = new FeedParser();
-        feedparser.on('error', function (error) {
+
+        feedparser.on('error', function (error)
+        {
             console.log(new Date(), 'WFO feedparser error.', error);
         });
-        feedparser.on('readable', function (error) {
+
+        feedparser.on('readable', function (error)
+        {
             var stream = this;
             var meta = this.meta;
             var item;
 
-            while (item = stream.read()) {
+            while (item = stream.read())
+            {
                 wfo.buffer.push(item);
             }
         });
-        feedparser.on('finish', function () {
+
+        feedparser.on('finish', function ()
+        {
             var stream = this;
 
             // We get here even when there's an error.
-            if (wfo.buffer.length > 0) {
-                wfo.state.newItems(wfo.buffer,
-                                   function (line) {
-                                       wfo.client.say('#botspam', line);
-                                   });
+            if(wfo.buffer.length > 0)
+            {
+                var message = wfo.state.newItems(wfo.buffer);
+
+                if(message)
+                {
+                    wfo.client.say('#wetfish', message);
+                }
             }
+
             wfo.timeout = setTimeout(wfo.tick, wfo.state.getCurrentTimeout());
         });
 
         var req = request(URI, {timeout: 5000});
-        req.on('error', function (error) {
+
+        req.on('error', function (error)
+        {
             var stream = this;
 
             console.log(new Date(), 'WFO request error.', error);
 
-            if (!stream.cancel_for_error) {
+            if(!stream.cancel_for_error)
+            {
                 console.log(new Date(), 'WFO Going to wait for the next tick.');
                 wfo.timeout = setTimeout(wfo.tick, wfo.state.getCurrentTimeout());
             }
@@ -123,17 +149,23 @@ var wfo =
             // If we get an error it may not be the only one.
             stream.cancel_for_error = true;
         });
-        req.on('response', function (res) {
+
+        req.on('response', function (res)
+        {
             // If we're asked to stop and we got the http response
             // right now, let's not send it.
-            if (wfo.stop) {
+            if(wfo.stop)
+            {
                 return;
             }
 
             var stream = this;
-            if (res.statusCode !== 200) {
+            if(res.statusCode !== 200)
+            {
                 console.log('Error');
-            } else {
+            }
+            else
+            {
                 stream.pipe(feedparser);
             }
         });
@@ -147,7 +179,8 @@ var wfo =
     unbind: function()
     {
         wfo.stop = true;
-        if (wfo.timeout !== null) {
+        if(wfo.timeout !== null)
+        {
             clearTimeout(wfo.timeout);
         }
     }
@@ -165,7 +198,5 @@ module.exports =
     {
         wfo.unbind();
         delete wfo;
-
-        // TODO Delete node imports
     }
 }
