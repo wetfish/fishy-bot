@@ -82,8 +82,16 @@ var quote =
 
         if(quote)
         {
-            model.connection.query('Insert into `quotes` (quote, created_by) values(?, ?)', [quote, source.from]);
-            core.helper.reply('say', source.from, source.to, "quote added!");
+            model.connection.query('Insert into `quotes` (quote, created_by) values(?, ?)', [quote, source.from], function(error, result)
+            {
+                if(error)
+                {
+                    core.helper.reply('say', source.from, source.to, "there was an error adding your quote!");
+                    return;
+                }
+
+                core.helper.reply('say', source.from, source.to, "quote #" + result.insertId + " added!");
+            });
         }
         else
         {
