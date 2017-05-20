@@ -163,7 +163,7 @@ var github =
         {
             page = data.pages[0].html_url;
             
-            var message = "[GitHub] User "+user+" "+action+" a page on the "+name+" wiki. ( "+page+" )";
+            var message = "9[GitHub] User "+user+" "+action+" a page on the 9"+name+" wiki. ( "+page+" )";
             github.client.say(github.channel, message);
             console.log(message);
         }
@@ -206,7 +206,7 @@ var github =
             
             // Possible exploit: Could you put IRC control characters in the name of a project? xD
             // Almost certainly an exploit: IRC control characters in a commit message :P
-            message = "[GitHub] A commit was made by "+author+" in the "+name+" project. ( "+data.commits[0].message+" | "+page+" )";
+            message = "9[GitHub] A commit was made by "+author+" in the 9"+name+" project. ( "+data.commits[0].message+" | "+page+" )";
         }
         else
         {
@@ -234,7 +234,7 @@ var github =
             }
 
             var group = github.find_group(data.commits.length);
-            message = "[GitHub] A "+group+" commits were made by "+authors+" in the "+name+" project. ( "+page+" )";
+            message = "9[GitHub] A "+group+" commits were made by 9"+authors+" in the 9"+name+" project. ( "+page+" )";
         }
     
         github.client.say(github.channel, message);
