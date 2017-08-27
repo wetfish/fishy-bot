@@ -13,7 +13,7 @@ var triplicates =
         ban_reset_time: 5400,
         triplicate_reset_time: 30,
         max_repetitions: 3,
-        channels: ['#wetfish'],
+        channels: [],
         ignore_names: ['Fiolina', 'fishy', 'Kitten', 'Neuromancer', 'denice', 'taylorswift', 'denicer', 'Sol', 'Honk'],
         ignore_hosts: []
     },
