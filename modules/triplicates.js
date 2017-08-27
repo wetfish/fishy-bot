@@ -14,7 +14,7 @@ var triplicates =
         triplicate_reset_time: 30,
         max_repetitions: 3,
         channels: ['#wetfish'],
-        ignore_names: ['Fiolina', 'fishy', 'Kitten', 'Neuromancer', 'denice', 'taylorswift', 'denicer', 'Sol', 'Honk'],
+        ignore_names: ['Fiolina', 'fishy', 'Kitten', 'topkek_2000'],
         ignore_hosts: []
     },
 
