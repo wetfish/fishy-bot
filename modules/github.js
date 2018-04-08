@@ -31,7 +31,7 @@ function processPost(request, response, callback) {
                 // Otherwise, process the post request normally
                 request.post = querystring.parse(queryData);
             }
-            
+
             callback(request, response);
         });
 
@@ -73,12 +73,12 @@ var github =
     sort: function(object)
     {
         var sortable = [];
-        
+
         for(var key in object)
         {
             sortable.push([key, object[key]])
         }
-        
+
         sortable.sort(function(a, b) {return a[1] - b[1]});
 
         return sortable;
@@ -115,7 +115,7 @@ var github =
             {
                 github[request.headers['x-github-event']](request.post);
             }
-            
+
             // Write to a logfile
             fs.appendFile('logs/github.txt', JSON.stringify(request.headers) + "\n" + JSON.stringify(request.post) + "\n\n", function (error)
             {
@@ -126,7 +126,7 @@ var github =
                 }
             });
         }
-        
+
         response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
         response.end();
     },
@@ -162,7 +162,7 @@ var github =
         if(data.pages.length == 1)
         {
             page = data.pages[0].html_url;
-            
+
             var message = "9[GitHub] User 9"+user+" "+action+" a page on the 9"+name+" wiki. ( "+page+" )";
             github.client.say(github.channel, message);
             console.log(message);
@@ -179,7 +179,7 @@ var github =
                 actions[page.action]++;
             });
 
-            
+
         }
         else
         {
@@ -193,7 +193,7 @@ var github =
         var name = data.repository.name;
         var page = data.repository.html_url;
         var message;
-        
+
         // If there are no commits, do nothing
         if(!data.commits.length)
         {
@@ -202,16 +202,17 @@ var github =
         else if(data.commits.length == 1)
         {
             var author = data.commits[0].author.username;
+            var message = data.commits[0].message.split("\n")[0];
             page = data.commits[0].url;
-            
+
             // Possible exploit: Could you put IRC control characters in the name of a project? xD
             // Almost certainly an exploit: IRC control characters in a commit message :P
-            message = "9[GitHub] A commit was made by 9"+author+" in the 9"+name+" project. ( "+data.commits[0].message+" | "+page+" )";
+            message = "9[GitHub] A commit was made by 9"+author+" in the 9"+name+" project. ( "+message+" | "+page+" )";
         }
         else
         {
             var authors = {};
-            
+
             data.commits.forEach(function(commit)
             {
                 if(typeof authors[commit.author.username] == "undefined")
@@ -236,7 +237,7 @@ var github =
             var group = github.find_group(data.commits.length);
             message = "9[GitHub] A "+group+" commits were made by 9"+authors+" in the 9"+name+" project. ( "+page+" )";
         }
-    
+
         github.client.say(github.channel, message);
         console.log(message);
     }
@@ -255,21 +256,21 @@ module.exports =
     unload: function()
     {
         github.server.close();
-        
+
         github.server.on('request', function( req, resp ) { req.socket.end(); });
         github.server.once('close', function()
         {
             // Remove the listeners after the server has shutdown for real.
             github.server.removeAllListeners();
         });
-        
+
         // Delete node modules
         delete fs;
         delete http;
         delete querystring;
         delete crypto;
         delete compare;
-        
+
         // Delete defined variables
         delete processPost;
         delete github;
