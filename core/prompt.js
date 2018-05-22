@@ -41,7 +41,7 @@ var prompt =
 
         if(module[0] == 'core')
             return {type: 'core', name: module[1]};
-        else if(module[1] == 'module')
+        else if(module[0] == 'module')
             return {type: 'modules', name: module[1]};
         else
             return {type: 'modules', name: module[0]};
