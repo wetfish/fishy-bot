@@ -121,8 +121,8 @@ var github =
             {
                 if(error)
                 {
-                    console.log("_Error_ Unable to append file!");
-                    console.log(error);
+                    console.error("_Error_ Unable to append file!");
+                    console.error(error);
                 }
             });
         }
@@ -133,7 +133,16 @@ var github =
 
     verify: function(hash, payload)
     {
-        hash = hash.split('=');
+        try
+        {
+            hash = hash.split('=');
+        }
+        catch(error)
+        {
+            console.error("_Error_ Unable to verify payload!");
+            console.error(payload);
+            return false;
+        }
 
         // Loop through github webhook keys
         for(var i = 0, l = config.webhook_keys.length; i < l; i++)
