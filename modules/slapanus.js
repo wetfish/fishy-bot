@@ -139,7 +139,7 @@ var anus =
     // Check if a user is a channel operator or a normal user
     vulnerable: function(user, channel)
     {
-        if(anus.client.chans[channel] && anus.client.chans[channel].users[user])
+        if(anus.client.chans[channel] !== undefined && anus.client.chans[channel].users[user] !== undefined)
         {
             if(!anus.client.chans[channel].users[user].match(/[@%&~]/))
             {

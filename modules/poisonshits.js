@@ -155,7 +155,7 @@ var shit =
     // Check if a user is a channel operator or a normal user
     vulnerable: function(user, channel)
     {
-        if(shit.client.chans[channel] && shit.client.chans[channel].users[user])
+        if(shit.client.chans[channel] !== undefined && shit.client.chans[channel].users[user] !== undefined)
         {
             if(!shit.client.chans[channel].users[user].match(/[@%&~]/))
             {
