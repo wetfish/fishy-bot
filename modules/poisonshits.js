@@ -168,17 +168,17 @@ var shit =
 
     poisonshits: function(from, to, message, details)
     {
+        if(!shit.vulnerable(from, to))
+        {
+            shit.reply('say', from, to, "You clearly take your moderation duties very seriously");
+            return;
+        }
+
         var timeout = shit.waiting(5, details.host);
 
         if(timeout)
         {
             shit.reply('say', from, from, "Can't shit, won't shit. ("+timeout+" seconds remaining)");
-            return;
-        }
-
-        if(!shit.vulnerable(from, to))
-        {
-            shit.reply('say', from, to, "You clearly take your moderation duties very seriously");
             return;
         }
 
@@ -204,17 +204,17 @@ var shit =
 
     superpoisonshits: function(from, to, message, details)
     {
+        if(!shit.vulnerable(from, to))
+        {
+            shit.reply('say', from, to, "Don't you have a job to do or something?");
+            return;
+        }
+
         var timeout = shit.waiting(15, details.host, 5 * 60);
 
         if(timeout)
         {
             shit.reply('say', from, from, "Can't shit, won't shit. ("+timeout+" seconds remaining)");
-            return;
-        }
-
-        if(!shit.vulnerable(from, to))
-        {
-            shit.reply('say', from, to, "Don't you have a job to do or something?");
             return;
         }
 

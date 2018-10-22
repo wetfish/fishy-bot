@@ -173,17 +173,17 @@ var anus =
 
     superslapanus: function(from, to, message)
     {
+        if(!anus.vulnerable(from, to))
+        {
+            anus.reply('say', from, to, "Kick somebody yourself, 'moderator'");
+            return;
+        }
+
         var timeout = anus.waiting(5);
 
         if(timeout)
         {
             anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
-            return;
-        }
-
-        if(!anus.vulnerable(from, to))
-        {
-            anus.reply('say', from, to, "Kick somebody yourself, 'moderator'");
             return;
         }
 
@@ -201,17 +201,17 @@ var anus =
 
     superslapanusv2: function(from, to, message)
     {
+        if(!anus.vulnerable(from, to))
+        {
+            anus.reply('say', from, to, "You clearly take your moderation duties very seriously");
+            return;
+        }
+
         var timeout = anus.waiting(5);
 
         if(timeout)
         {
             anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
-            return;
-        }
-
-        if(!anus.vulnerable(from, to))
-        {
-            anus.reply('say', from, to, "You clearly take your moderation duties very seriously");
             return;
         }
 
@@ -229,17 +229,17 @@ var anus =
 
     supersuckurdick: function(from, to, message)
     {
+        if(!anus.vulnerable(from, to))
+        {
+            anus.reply('say', from, to, "Super suck your own dick");
+            return;
+        }
+
         var timeout = anus.waiting(2);
 
         if(timeout)
         {
             anus.reply('say', from, from, "Can't suck, won't suck. ("+timeout+" seconds remaining)");
-            return;
-        }
-
-        if(!anus.vulnerable(from, to))
-        {
-            anus.reply('say', from, to, "Super suck your own dick");
             return;
         }
 
@@ -256,17 +256,17 @@ var anus =
 
     superslapaniggasanus: function(from, to, message)
     {
+        if(!anus.vulnerable(from, to))
+        {
+            anus.reply('say', from, to, "Fuck da police");
+            return;
+        }
+
         var timeout = anus.waiting(10);
 
         if(timeout)
         {
             anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
-            return;
-        }
-
-        if(!anus.vulnerable(from, to))
-        {
-            anus.reply('say', from, to, "Fuck da police");
             return;
         }
 
@@ -284,6 +284,12 @@ var anus =
 
     superslapsiesta: function(from, to, message)
     {
+        if(!anus.vulnerable(from, to))
+        {
+            anus.reply('say', from, to, "¡Abuso del moderador!");
+            return;
+        }
+
         var slaps =
         [
             '11¡02S12Ú06P13E05R 04B07O08F03E09T10A11D02A 12A06N13O 05N04O 07M08Á03S 09L10E11C02H12E 06M13A05T04E07R08N03A09!',
@@ -298,12 +304,6 @@ var anus =
         {
             // TODO: Translate to spanish?
             anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
-            return;
-        }
-
-        if(!anus.vulnerable(from, to))
-        {
-            anus.reply('say', from, to, "¡Abuso del moderador!");
             return;
         }
 
@@ -324,18 +324,18 @@ var anus =
 
     superslapbaka: function(from, to, message)
     {
+        if(!anus.vulnerable(from, to))
+        {
+            anus.reply('say', from, to, "Anata wa baka desu");
+            return;
+        }
+
         var timeout = anus.waiting(2);
 
         if(timeout)
         {
             // TODO: Translate to japanese?
             anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
-            return;
-        }
-
-        if(!anus.vulnerable(from, to))
-        {
-            anus.reply('say', from, to, "Anata wa baka desu");
             return;
         }
 
