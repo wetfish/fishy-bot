@@ -27,10 +27,10 @@ var anus =
     users: [],
     wait: false,
     timeout: false,
-    
+
     // Accept commands from anus input!
     // Based on user/hostname
- 
+
     // This really should be a core function or something
     reply: function(type, from, to, message)
     {
@@ -93,7 +93,7 @@ var anus =
     get_users: function()
     {
         anus.users = [];
-        
+
         for(var i = 0, keys = Object.keys(anus.client.chans['#wetfish'].users), l = keys.length; i < l; ++i)
         {
             var user = keys[i];
@@ -108,7 +108,7 @@ var anus =
     random_target: function(from, message)
     {
         anus.get_users();
-        
+
         // If there's a potential target
         if(message)
         {
@@ -124,28 +124,42 @@ var anus =
 
                 return message[0];
             }
-            
+
             // Attack the caster
             else if(action == 1)
                 return from;
 
             // Else, use the default behavior
         }
-        
-        var index = crypto.randomBytes(1).readUInt8(0) % anus.users.length;        
+
+        var index = crypto.randomBytes(1).readUInt8(0) % anus.users.length;
         return anus.users[index];
+    },
+
+    // Check if a user is a channel operator or a normal user
+    vulnerable: function(user, channel)
+    {
+        if(anus.client.chans[channel] && anus.client.chans[channel].users[user])
+        {
+            if(!anus.client.chans[channel].users[user].match(/[@%&~]/))
+            {
+                return true;
+            }
+        }
+
+        return false;
     },
 
     slapanus: function(from, to, message)
     {
         var timeout = anus.waiting();
-        
+
         if(timeout)
         {
             anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
             return;
         }
-        
+
         // Pick a random target
         var target = anus.random_target(from, message);
 
@@ -160,13 +174,19 @@ var anus =
     superslapanus: function(from, to, message)
     {
         var timeout = anus.waiting(5);
-        
+
         if(timeout)
         {
             anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
             return;
         }
-        
+
+        if(!anus.vulnerable(from, to))
+        {
+            anus.reply('say', from, to, "Kick somebody yourself, 'moderator'");
+            return;
+        }
+
         // Pick a random target
         var target = anus.random_target(from, message);
 
@@ -182,13 +202,19 @@ var anus =
     superslapanusv2: function(from, to, message)
     {
         var timeout = anus.waiting(5);
-        
+
         if(timeout)
         {
             anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
             return;
         }
-        
+
+        if(!anus.vulnerable(from, to))
+        {
+            anus.reply('say', from, to, "You clearly take your moderation duties very seriously");
+            return;
+        }
+
         // Pick a random target
         var target = anus.random_target(from, message);
 
@@ -208,6 +234,12 @@ var anus =
         if(timeout)
         {
             anus.reply('say', from, from, "Can't suck, won't suck. ("+timeout+" seconds remaining)");
+            return;
+        }
+
+        if(!anus.vulnerable(from, to))
+        {
+            anus.reply('say', from, to, "Super suck your own dick");
             return;
         }
 
@@ -231,7 +263,13 @@ var anus =
             anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
             return;
         }
-        
+
+        if(!anus.vulnerable(from, to))
+        {
+            anus.reply('say', from, to, "Fuck da police");
+            return;
+        }
+
         // Pick a random target
         var target = anus.random_target(from, message);
 
@@ -255,14 +293,20 @@ var anus =
         ];
 
         var timeout = anus.waiting(0.5);
-        
+
         if(timeout)
         {
             // TODO: Translate to spanish?
             anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
             return;
         }
-        
+
+        if(!anus.vulnerable(from, to))
+        {
+            anus.reply('say', from, to, "¡Abuso del moderador!");
+            return;
+        }
+
         // Pick a random target
         var target = anus.random_target(from, message);
 
@@ -281,14 +325,20 @@ var anus =
     superslapbaka: function(from, to, message)
     {
         var timeout = anus.waiting(2);
-        
+
         if(timeout)
         {
             // TODO: Translate to japanese?
             anus.reply('say', from, from, "Can't slap, won't slap. ("+timeout+" seconds remaining)");
             return;
         }
-        
+
+        if(!anus.vulnerable(from, to))
+        {
+            anus.reply('say', from, to, "Anata wa baka desu");
+            return;
+        }
+
         // Pick a random target
         var target = anus.random_target(from, message);
 

@@ -16,10 +16,10 @@ var shit =
     {
         if(typeof input != "string")
             input = "";
-            
+
         return input.split(" ");
     },
-     
+
     // This really should be a core function or something
     reply: function(type, from, to, message)
     {
@@ -101,7 +101,7 @@ var shit =
     get_users: function()
     {
         shit.users = [];
-        
+
         for(var i = 0, keys = Object.keys(shit.client.chans['#wetfish'].users), l = keys.length; i < l; ++i)
         {
             var user = keys[i];
@@ -118,7 +118,7 @@ var shit =
         // Make sure not is an array
         if(!Array.isArray(not))
             not = [];
-        
+
         // Loop 10 times trying to find a unique target
         for(var i = 0; i < 10; i++)
         {
@@ -137,7 +137,7 @@ var shit =
 
         // If there's a potential target
         message = shit.parse(message);
-        
+
         var target =
         {
             request: message[0],
@@ -152,13 +152,33 @@ var shit =
         return target;
     },
 
+    // Check if a user is a channel operator or a normal user
+    vulnerable: function(user, channel)
+    {
+        if(shit.client.chans[channel] && shit.client.chans[channel].users[user])
+        {
+            if(!shit.client.chans[channel].users[user].match(/[@%&~]/))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    },
+
     poisonshits: function(from, to, message, details)
     {
         var timeout = shit.waiting(5, details.host);
-        
+
         if(timeout)
         {
             shit.reply('say', from, from, "Can't shit, won't shit. ("+timeout+" seconds remaining)");
+            return;
+        }
+
+        if(!shit.vulnerable(from, to))
+        {
+            shit.reply('say', from, to, "You clearly take your moderation duties very seriously");
             return;
         }
 
@@ -185,10 +205,16 @@ var shit =
     superpoisonshits: function(from, to, message, details)
     {
         var timeout = shit.waiting(15, details.host, 5 * 60);
-        
+
         if(timeout)
         {
             shit.reply('say', from, from, "Can't shit, won't shit. ("+timeout+" seconds remaining)");
+            return;
+        }
+
+        if(!shit.vulnerable(from, to))
+        {
+            shit.reply('say', from, to, "Don't you have a job to do or something?");
             return;
         }
 
