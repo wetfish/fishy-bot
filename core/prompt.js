@@ -7,7 +7,7 @@ var prompt =
     core: false,
 
     // List of valid actions
-    list: ['say', 'ctcp', 'load', 'unload', 'reload'],
+    list: ['say', 'ctcp', 'load', 'unload', 'reload', 'quit'],
 
     // Handler for user input
     handle: function(line)
@@ -87,7 +87,14 @@ var prompt =
     {
         module = prompt.parse_module(module);
         prompt.core.reload(module);
-    }
+    },
+
+    // Shut down the bot
+    quit: function(from, to, module)
+    {   
+	console.log('See ya laterrrr!');
+        require('process').exit();
+    },
 };
 
 module.exports =
