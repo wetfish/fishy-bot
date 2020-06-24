@@ -93,7 +93,7 @@ var prompt =
     quit: function(from, to, module)
     {   
 	console.log('See ya laterrrr!');
-        require('process').exit();
+        process.exit();
     },
 };
 

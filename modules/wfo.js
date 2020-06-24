@@ -56,7 +56,7 @@ State.prototype.newItems = function(items)
 
         if(need_announce.length >= this.LIMIT)
         {
-            var message = "9[WFO] Woah dude. 9 %d posts were made in the last %d minutes! Join the action at 9https://wetfishonline.com/";
+            var message = "9[WFO] Woah dude.9 %d posts were made in the last %d minutes! Join the action at 9https://wetfishonline.com/";
             output = util.format(message, need_announce.length, this.TIMEOUT / 60 / 1000);
         }
         else if(need_announce.length > 0)
