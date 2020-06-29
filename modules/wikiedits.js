@@ -67,7 +67,6 @@ var wikiedits =
             if (wikiedits.announceList.length > 1)
             {
                 wikiedits.client.say('#botspam', `\x0309[wiki]\x0F There has been \x0309${wikiedits.announceList.length}\x0F edits in the last ${REANNOUNCE_TIME} minutes! Have a look: https://wiki.wetfish.net/?recent`);
-                console.log(wikiedits.announceList.length);
             }
             else if (wikiedits.announceList.length == 1)
             {
