@@ -1,4 +1,4 @@
-const BASE_URI = "http://wikilocal";
+const BASE_URI = "https://wiki.wetfish.net";
 const URI = BASE_URI + "/api/v1/recent";
 const CHANNEL = "#botspam";
 
