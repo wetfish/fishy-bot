@@ -1,10 +1,15 @@
-const URI = "https://wiki.wetfish.net/api/v1/recent";
+const BASE_URI = "http://wikilocal";
+const URI = BASE_URI + "/api/v1/recent";
+const CHANNEL = "#botspam";
 
 // Times are in minutes
 const REANNOUNCE_TIME = 5;
 const FETCH_TIME = 1;
 
 const request = require('request');
+// IRC Colors
+const green = s => { return `\x0309${s}\x0F` };
+const clear = s => { return `\x0F${s}\x0309` };
 
 var wikiedits = 
 {
@@ -14,8 +19,10 @@ var wikiedits =
     lastAnnounceTime: null,
 
     seenIDs: [],
-    announceList: [],
 
+    names: [],
+    pages: [],
+    edits: [],
     // We're not ready at the start since every edit will be 'new'
     ready: false,
 
@@ -48,7 +55,17 @@ var wikiedits =
                 if (wikiedits.ready)
                 {
                     // Found something new and we want to announce it.
-                    wikiedits.announceList.push(edit);
+                    if (!wikiedits.pages.inArray(edit.Title))
+                    {
+                        wikiedits.pages.push([edit.Title, edit.Path]);
+                    }
+
+                    if (!wikiedits.names.includes(edit.Name))
+                    {
+                        wikiedits.names.push(edit.Name);
+                    }
+
+                    wikiedits.edits.push(edit);
                     wikiedits.announce();
                 }
                 wikiedits.seenIDs.push(edit.ID);
@@ -64,15 +81,42 @@ var wikiedits =
         // Announce if it's been more than REANNOUNCE_TIME minutes..
         if ((currentTime - wikiedits.lastAnnounceTime) >= REANNOUNCE_TIME * (60 * 1000))
         {
-            if (wikiedits.announceList.length > 1)
+            var page = '';
+            var names = '';
+            var edits = '';
+
+            if (wikiedits.names.length >= 4)
             {
-                wikiedits.client.say('#botspam', `\x0309[wiki]\x0F There has been \x0309${wikiedits.announceList.length}\x0F edits in the last ${REANNOUNCE_TIME} minutes! Have a look: https://wiki.wetfish.net/?recent`);
+                names = `${wikiedits.names.slice(0, 3).join(clear(', '))} ${clear('and')} ${green(wikiedits.names.length - 3)} others`;
             }
-            else if (wikiedits.announceList.length == 1)
+            else
             {
-                wikiedits.client.say('#botspam', `\x0309[wiki]\x0F \x0309${wikiedits.announceList[0].Name}\x0F edited \x0309${wikiedits.announceList[0].Title}\x0F at https://wiki.wetfish.net/?recent`);
+                names = wikiedits.names.join(clear(', '));
             }
-            wikiedits.announceList = [];
+
+            if (wikiedits.pages.length == 1)
+            {
+                page = `the ${green(wikiedits.pages[0][0])} page - ${BASE_URI}/${wikiedits.pages[0][1]}`;
+            }
+            else
+            {
+                page =  `${green(wikiedits.pages.length.toString())} pages - ${BASE_URI}/?recent`;
+            }
+
+            if (wikiedits.edits.length == 1)
+            {
+                edits = `made an edit to ${page} `;
+            }
+            else
+            {
+                edits = `made ${green(wikiedits.edits.length)} edits to ${page}`;
+            }
+
+            wikiedits.client.say(CHANNEL, `${green("[wiki]")} ${green(names)} ${edits}`);
+
+            wikiedits.names = [];
+            wikiedits.pages = [];
+            wikiedits.edits = [];
             wikiedits.lastAnnounceTime = new Date().getTime();
         }
         else
@@ -80,7 +124,13 @@ var wikiedits =
             // Try again in REANNOUNCE_TIME minutes.
             if (!wikiedits.announceTimeout)
             {
-                wikiedits.announceTimeout = setTimeout(wikiedits.announce, REANNOUNCE_TIME * (60 * 1000));
+                wikiedits.announceTimeout = setTimeout(() =>
+                {
+                    wikiedits.announce();
+                    clearTimeout(wikiedits.announceTimeout);
+                    wikiedits.announceTimeout = null;
+
+                }, REANNOUNCE_TIME * (60 * 1000));
             }
         }
     },
@@ -92,13 +142,33 @@ var wikiedits =
 
     unbind: function()
     {
-        if(wikiedits.timeout !== null)
+        if(wikiedits.setTimeout)
         {
             clearTimeout(wikiedits.timeout);
+        }
+
+        if (wikiedits.announceTimeout)
+        {
+            clearTimeout(wikiedits.announceTimeout);
         }
     }
 }
 
+// Custom method to find whether a value is found within any array within the array.
+Array.prototype.inArray = function(needle)
+{
+    for (var i in this)
+    {
+        for (var x in this[i])
+        {
+            if (this[i][x] == needle)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 module.exports =
 {
