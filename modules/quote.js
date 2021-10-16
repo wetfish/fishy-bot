@@ -322,12 +322,12 @@ var quote =
             where = 'where ' + where.join (' and ');
         }
 
-        model.connection.query('Select count(`id`) from `quotes` ' + where, function(countError, countResponse)
+        model.connection.query('Select count(`id`) as count from `quotes` ' + where, function(countError, countResponse)
         {
             // Make sure there wasn't an error
             if(!countError && countResponse.length)
             {
-                var count = countResponse[0];
+                var count = countResponse[0]['count'];
 
                 // Hash the where string
                 var hash = crypto.createHash('sha256');
@@ -358,9 +358,10 @@ var quote =
                     if(!error && response.length)
                     {
                         quote.output(response[0], source);
-                        quote.search[whereHash].index++;
                     }
                 });
+
+                quote.search[whereHash].index++;
             }
             else
             {
