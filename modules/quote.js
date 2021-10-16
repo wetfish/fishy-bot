@@ -1,15 +1,17 @@
-/* 
+/*
  * Save and display quotes from the channel
  */
 
 var core;
 var model;
 var extend = require('extend');
+var crypto = require('crypto');
 
 var quote =
 {
     events: ['message'],
     functions: ['add', 'blame', 'latest', 'delete', 'like', 'dislike', 'meh', 'popular'],
+    search: {}, // This object stores the random seed and current index of results being displayed
 
     message: function(from, to, message, details)
     {
@@ -278,7 +280,7 @@ var quote =
         });
     },
 
-    // Display a random quote with a score above 5
+    // Display a random quote with a score above a specific threshold
     popular: function(options, source)
     {
         quote.random({'score': 2}, source);
@@ -320,12 +322,45 @@ var quote =
             where = 'where ' + where.join (' and ');
         }
 
-        model.connection.query('Select * from `quotes` ' + where + ' order by rand() limit 0,1', function(error, response)
+        model.connection.query('Select count(`id`) from `quotes` ' + where, function(countError, countResponse)
         {
             // Make sure there wasn't an error
-            if(!error && response.length)
+            if(!countError && countResponse.length)
             {
-                quote.output(response[0], source);
+                var count = countResponse[0];
+
+                // Hash the where string
+                var hash = crypto.createHash('sha256');
+                hash.update(where);
+                var whereHash = hash.digest('hex');
+
+                if(quote.search[whereHash] === undefined)
+                {
+                    quote.search[whereHash] = {seed: 1, index: 0, total: count};
+                }
+
+                // If the cached total is different from the current count of results, reset the search index
+                if(quote.search[whereHash].total != count)
+                {
+                    quote.search[whereHash].seed = 1;
+                    quote.search[whereHash].index = 0;
+                }
+
+                // If the index is greater than the number of results, increment the seed
+                if(quote.search[whereHash].index >= count)
+                {
+                    quote.search[whereHash].seed++;
+                    quote.search[whereHash].index = 0;
+                }
+
+                model.connection.query('Select * from `quotes` ' + where + ' order by rand(' + quote.search[whereHash].seed + ') limit ' + quote.search[whereHash].index + ',1', function(error, response)
+                {
+                    if(!error && response.length)
+                    {
+                        quote.output(response[0], source);
+                        quote.search[whereHash].index++;
+                    }
+                });
             }
             else
             {
