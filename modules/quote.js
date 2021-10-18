@@ -7,6 +7,13 @@ var model;
 var extend = require('extend');
 var crypto = require('crypto');
 
+function randomInteger(min, max)
+{
+    return Math.floor(
+        Math.random() * (max - min) + min
+    )
+}
+
 var quote =
 {
     events: ['message'],
@@ -336,7 +343,8 @@ var quote =
 
                 if(quote.search[whereHash] === undefined)
                 {
-                    quote.search[whereHash] = {seed: 1, index: 0, total: count};
+                    // Initialize with a random seed to prevent duplicate quotes from being displayed when this module is reloaded
+                    quote.search[whereHash] = {seed: randomInteger(1, 1000000), index: 0, total: count};
                 }
 
                 // If the cached total is different from the current count of results, reset the search index
