@@ -350,8 +350,7 @@ var quote =
                 // If the cached total is different from the current count of results, reset the search index
                 if(quote.search[whereHash].total != count)
                 {
-                    quote.search[whereHash].seed = 1;
-                    quote.search[whereHash].index = 0;
+                    quote.search[whereHash] = {seed: randomInteger(1, 1000000), index: 0, total: count};
                 }
 
                 // If the index is greater than the number of results, increment the seed
