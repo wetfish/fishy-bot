@@ -16,7 +16,8 @@ var model =
             user     : config.mysql.user,
             password : config.mysql.password,
             database : config.mysql.database,
-            timezone : 'utc' 
+            timezone : 'utc',
+            charset  : 'utf8mb4',
         });
 
         model.connected = true;
