@@ -54,25 +54,25 @@ State.prototype.newItems = function(items)
         // announce oldest first.
         need_announce.reverse();
 
+console.log("!!! Announcements", need_announce);
+
         if(need_announce.length >= this.LIMIT)
         {
-            var message = "9[WFO] Woah dude.9 %d posts were made in the last %d minutes! Join the action at 9https://wetfishonline.com/";
+            var message = "9[Forums] Woah dude.9 %d posts were made in the last %d minutes! Join the action at 9https://wetfishonline.com/";
             output = util.format(message, need_announce.length, this.TIMEOUT / 60 / 1000);
         }
         else if(need_announce.length > 0)
         {
-            for (var i in need_announce)
+            for (var item of need_announce)
             {
-                var item = need_announce[i];
-                var message = "9[WFO] %s 9posted %s 9at %s";
+                var message = "9[Forums] %s 9posted %s 9at %s";
                 output = util.format(message, item.author, item.title, item.guid);
             }
         }
     }
 
     // We populated seen_guids, so now we're ready.
-    if(this.current_state == this.STATE_NOTREADY)
-    {
+    if(this.current_state == this.STATE_NOTREADY)    {
         console.log('WFO entering STATE_NORMAL');
         this.current_state = this.STATE_NORMAL;
     }
@@ -110,6 +110,7 @@ var wfo =
 
             while (item = stream.read())
             {
+//console.log("!!! Got new item", item);
                 wfo.buffer.push(item);
             }
         });

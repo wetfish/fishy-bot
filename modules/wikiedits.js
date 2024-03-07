@@ -1,6 +1,6 @@
 const BASE_URI = "https://wiki.wetfish.net";
 const URI = BASE_URI + "/api/v1/recent";
-const CHANNEL = "#botspam";
+const CHANNEL = "#wetfish";
 
 // Times are in minutes
 const REANNOUNCE_TIME = 5;
@@ -112,7 +112,7 @@ var wikiedits =
                 edits = `made ${green(wikiedits.edits.length)} edits to ${page}`;
             }
 
-            wikiedits.client.say(CHANNEL, `${green("[wiki]")} ${green(names)} ${edits}`);
+            wikiedits.client.say(CHANNEL, `${green("[Wiki]")} ${green(names)} ${edits}`);
 
             wikiedits.names = [];
             wikiedits.pages = [];
