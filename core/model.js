@@ -38,7 +38,7 @@ var model =
 
         var where = [];
         var values = [];
-        
+
         for(var i = 0, keys = Object.keys(select), l = keys.length; i < l; i++)
         {
             where.push(model.mysql.escapeId(keys[i]) + ' = ?');
@@ -57,6 +57,7 @@ var model =
         [
             'PROTOCOL_CONNECTION_LOST',
             'ECONNREFUSED',
+            'ECONNRESET',
         ];
 
         if(errors.indexOf(error.code) > -1)
@@ -79,7 +80,7 @@ module.exports =
     {
         model.connect();
         model.connection.addListener('error', model.error);
-        
+
         core = _core;
         core.model = model;
     },
