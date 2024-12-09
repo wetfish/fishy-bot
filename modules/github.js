@@ -100,7 +100,6 @@ var github =
 
         }).listen(github.port);
 
-
         github.server.on('clientError', function(error, socket)
         {
             if (error.code === 'ECONNRESET' || !socket.writable)

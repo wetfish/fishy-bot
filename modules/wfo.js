@@ -11,7 +11,7 @@ function State()
     this.STATE_NOTREADY = 0; // Before we have seen_guids, so we don't know what msgs are new.
     this.STATE_NORMAL = 1;   // We're active.
 
-    this.TIMEOUT = 5 * (60 * 1000);
+    this.TIMEOUT = 30 * (60 * 1000);
     this.LIMIT = 2; // Max num items we would write about each time?
 
     this.seen_guids = []; // TODO: Clean up old items.
