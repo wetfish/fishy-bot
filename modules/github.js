@@ -99,6 +99,18 @@ var github =
             }
 
         }).listen(github.port);
+
+
+        github.server.on('clientError', function(error, socket)
+        {
+            if (error.code === 'ECONNRESET' || !socket.writable)
+            {
+                console.error("_WARNING!_ Connection reset. Potential hacking attempt?");
+                return;
+            }
+
+            socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+        });
     },
 
     handler: function(request, response)
