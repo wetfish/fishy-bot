@@ -98,10 +98,18 @@ var github =
                 response.end();
             }
 
-        }).listen(github.port);
+        });
+
+        github.server.on('error', function (error)
+        {
+            console.error("_WARNING!_ Got a server error?");
+            console.error(error);
+        });
 
         github.server.on('clientError', function(error, socket)
         {
+            console.error(error);
+
             if (error.code === 'ECONNRESET' || !socket.writable)
             {
                 console.error("_WARNING!_ Connection reset. Potential hacking attempt?");
@@ -110,6 +118,8 @@ var github =
 
             socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
         });
+
+        github.server.listen(github.port);
     },
 
     handler: function(request, response)
